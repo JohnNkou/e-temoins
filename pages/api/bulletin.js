@@ -34,6 +34,8 @@ export default async function Bulletin(req,res){
 					return;
 				}
 				else{
+					await fs.rename(file.path,`/Users/flashbell/Node/e-temoins/public/upload/bulletin/${file.originalFilename}`);
+					
 					let r2 = await db.addVote({ president:r.votes[0], national:r.votes[1], provincial:r.votes[2], bulletinId:response.id }).catch((error)=>({error}));
 
 					if(r2.error){
