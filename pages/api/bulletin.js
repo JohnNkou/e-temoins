@@ -4,6 +4,8 @@ import fs from 'fs/promises';
 import conn from '../../src/db/db.js'
 import dbClass from '../../src/db/dbClass.js'
 
+const ROOT = process.env.ROOT;
+
 export default async function Bulletin(req,res){
 	let query = req.query,
 	db = new dbClass(conn),
@@ -15,9 +17,10 @@ export default async function Bulletin(req,res){
 	r,
 	failed = [],
 	errors = [],
-	upload = '/Users/flashbell/Node/e-temoins/public/upload',
+	upload = `${ROOT}/public/upload`,
 	bPath = `${upload}/bulletin`,
 	ePath = `${upload}/failed`;
+	
 
 	if(method == 'POST'){
 		if(body.error){

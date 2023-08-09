@@ -5,7 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart":"ROOT=`pwd` npx next dev",
+    "prodStart": "ROOT=`pwd` npx next start -p 8080",
+    "build":"npx next build"
   },
   "repository": {
     "type": "git",
