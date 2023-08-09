@@ -3,6 +3,8 @@ import dbClass from '../../src/db/dbClass.js'
 import { multiParse } from '../../src/helper.js'
 import fs from 'fs/promises'
 
+const ROOT = process.env.ROOT;
+
 export default async function Candidat(req,res){
 	let db = new dbClass(conn),
 	query = req.query,
@@ -23,7 +25,7 @@ export default async function Candidat(req,res){
 			res.status((response.inserted)? 201:200).json(response);
 			for(let i = 0; i < form.removePath.length; i++){
 				let path = form.removePath[i];
-				console.log(await fs.rename(path[0],`/Users/flashbell/Node/e-temoins/public/profiles/${path[1]}`))
+				console.log(await fs.rename(path[0],`${ROOT}/public/profiles/${path[1]}`))
 			}
 		}).catch(async (error)=>{
 			res.status(500).json(error);
