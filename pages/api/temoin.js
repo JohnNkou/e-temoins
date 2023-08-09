@@ -5,12 +5,13 @@ import fs from 'fs/promises'
 
 export default async function Candidat(req,res){
 	let db = new dbClass(conn),
+	query = req.query,
 	body = req.body,
 	method = req.method,
 	form = await multiParse(req).catch((error)=> ({error}));
 
 	if(method == 'GET'){
-		await db.getTemoins().then((response)=>{
+		await db.getTemoins(query).then((response)=>{
 			res.status(200).json(response);
 		}).catch((error)=>{
 			res.status(500).json(error);

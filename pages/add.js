@@ -1,9 +1,13 @@
 import Head from 'next/head';
 import axios from 'axios';
 import React from 'react'
+import LoadingText from '../src/components/LoadingText'
+import { useState } from 'react';
 
 export default function Add(){
-    let formRef = React.createRef();
+    let formRef = React.createRef(),
+    [loading,setLoading] = useState(false),
+    loadingClass = (loading)? '':'hide';
 
     function postBulletin(event){
         event.preventDefault();
@@ -14,11 +18,22 @@ export default function Add(){
             alert("Completer le bulletin ");
         }
         else{
+            setLoading(true);
+
             axios.post('/api/bulletin',form).then((response)=>{
-                alert("Bulletin inseré");
+                let payload = response.data;
+
+                if(payload.failed.length){
+                    alert(payload.failed.length + " bulletins n'ont pas pu etre inséré. \n"+payload.failed.toString());
+                }
+                else{
+                    alert("Tous les bulletin ont été inséré");
+                }
             }).catch((error)=>{
                 alert("Bulleting non inseré");
                 console.error(error);
+            }).finally(()=>{
+                setLoading(false);
             })
         }
     }
@@ -85,6 +100,7 @@ export default function Add(){
                     {/*<!-- Banner End -->*/}
                     
                     <div className="container">
+                        <LoadingText className={loadingClass} />
                         <form ref={formRef} onSubmit={postBulletin} className="my-2">
                             <div className="input-group">
                                 <input name='bulletins' type="file" className="imageuplodify" accept=".xlsx,.xls,image/*,.doc,audio/*,.docx,video/*,.ppt,.pptx,.txt,.pdf" multiple='true' />
@@ -118,12 +134,12 @@ export default function Add(){
             <script src="assets/js/settings.js"></script>
             <script src="assets/js/custom.js"></script>
             <script src="assets/vendor/imageuplodify/imageuploadify.min.js"></script>
-            <script dangerouslySetInnerHTML={{__html:`
+            {/*<script dangerouslySetInnerHTML={{__html:`
                 $(document).ready(function() {
                     $('input[type="file"]').imageuploadify();
                 })
             `}}>
-            </script>
+            </script>*/}
         </>
     )
 }

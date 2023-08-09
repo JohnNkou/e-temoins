@@ -26487,6 +26487,13 @@ table.table {
   .rtl .offset-11 {
     margin-right: 91.66667%;
     margin-left: 0; }
+
+    .whoosh{
+  display:none;
+}
+.hide{
+  visibility: hidden;
+}
   @media (min-width: 576px) {
     .rtl .offset-sm-0 {
       margin-right: 0;
@@ -29404,4 +29411,3 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
     background-color: #251e35; }
     [data-theme-version="dark"] .footer .copyright a {
       color: #fff; }
-

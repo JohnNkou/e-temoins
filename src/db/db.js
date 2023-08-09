@@ -4,7 +4,8 @@ const conn = mysql.createConnection({
 	host:'localhost',
 	user:'ceni',
 	password:'ceni',
-	database:'Ceni'
+	database:'Ceni',
+	multipleStatements:true
 });
 
 export default conn;

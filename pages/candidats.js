@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import ClientCard from '../src/views/dashboard/ClientCard';
 import TabLeader from '../src/views/dashboard/TabLeader';
+import Candidat from '../src/views/candidat';
 
 const castels = [
 	{
@@ -23,7 +24,7 @@ export default function Home(){
 				<link rel="shortcut icon" type="image/x-icon" href="img/ico.png" />
 			    
 			    {/*<!-- Title -->*/}
-				<title>Acceuil</title>
+				<title>Candidats</title>
 				
 				{/*<!-- PWA Version -->*/}
 				<link rel="manifest" href="manifest.json" />
@@ -145,6 +146,9 @@ export default function Home(){
 						<div className="dz-info">
 							<h2 className="name mb-0">Resultat</h2>
 						</div>
+						<div className="dz-media media-45 rounded-circle">
+							<a href="/profil"><img src="img/kurt.jpg" className="rounded-circle" alt="author-image" /></a>
+						</div>
 					</div>
 				</div>
 			    {/*<!-- Banner End -->*/}
@@ -170,52 +174,14 @@ export default function Home(){
 			                
 			                {/*<!-- Dashboard Area -->*/}
 			                <div className="dashboard-area mt-5">
-								{/*<!-- Features -->*/}
-
-								{/*<!-- Categorie -->*/}
-			                    <div className="categorie-section">
-			                        <TabLeader />
-			                        
-			                    </div>
-								{/*<!-- Categorie End -->*/}
-
-			                    <div className="features-box">
-			                        <div className="row m-b20 g-3">
-			                            {castels.map((castel)=> <ClientCard {...castel} />)}    
-			                        </div>    
-			                    </div>
-								{/*<!-- Features End -->*/}
-
-
-
-								{/*<!-- Features -->*/}
-			                    
-								{/*<!-- Features End -->*/}
+								
 			                </div>
 			            </div>
 			        </div>
 				</div>				
-								
-								
-								
-								
-			    
+				<Candidat />
 			    {/*<!-- Menubar -->*/}
-				<div className="menubar-area" style={{background:"#131213"}}>
-					<div className="toolbar-inner menubar-nav">
-						<a href="/home" className="nav-link active">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M9.14373 20.7821V17.7152C9.14372 16.9381 9.77567 16.3067 10.5584 16.3018H13.4326C14.2189 16.3018 14.8563 16.9346 14.8563 17.7152V20.7732C14.8562 21.4473 15.404 21.9951 16.0829 22H18.0438C18.9596 22.0023 19.8388 21.6428 20.4872 21.0007C21.1356 20.3586 21.5 19.4868 21.5 18.5775V9.86585C21.5 9.13139 21.1721 8.43471 20.6046 7.9635L13.943 2.67427C12.7785 1.74912 11.1154 1.77901 9.98539 2.74538L3.46701 7.9635C2.87274 8.42082 2.51755 9.11956 2.5 9.86585V18.5686C2.5 20.4637 4.04738 22 5.95617 22H7.87229C8.19917 22.0023 8.51349 21.8751 8.74547 21.6464C8.97746 21.4178 9.10793 21.1067 9.10792 20.7821H9.14373Z" fill="#130F26"/>
-							</svg>
-						</a>
-						<a href="/candidats" className="nav-link">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffffff" className="bi bi-people-fill" viewBox="0 0 16 16">
-								<path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
-							</svg>
-						</a>
-					</div>
-				</div>
-				{/*<!-- Menubar -->*/}
+				
 				
 				
 
