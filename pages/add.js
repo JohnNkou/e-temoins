@@ -108,9 +108,6 @@ export default function Add(){
                             <div className="input-group">
                                 <textarea name='commentaire' type="text" placeholder="Observations" className="form-control" style={{borderRadius: "10px"}}></textarea>
                             </div>
-                            <div className="input-group">
-                                <button type='submit'>Envoyer</button>
-                            </div>
 
                         </form>
                     </div>
@@ -119,7 +116,7 @@ export default function Add(){
                     {/*<!-- Footer -->*/}
                     <footer className="footer fixed">
                         <div className="container">
-                            <a href="#!" className="btn btn-primary w-100 btn-rounded">Envoyez</a>
+                            <a onClick={postBulletin} href="#!" className="btn btn-primary w-100 btn-rounded">Envoyez</a>
                         </div>
                     </footer>
                     {/*<!-- Footer End -->*/}
