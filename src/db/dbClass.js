@@ -2,7 +2,7 @@ import mysql from 'mysql';
 
 export default function dbClass(conn){
 
-	function addResponse(response, error=null){
+	function addResponse(response, error=null){ console.log('response',response);
 		return {
 			inserted: Number.isInteger(response.insertId),
 			error,
