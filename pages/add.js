@@ -27,10 +27,10 @@ export default function Add(){
                     alert(payload.failed.length + " bulletins n'ont pas pu etre inséré. \n"+payload.failed.toString());
                 }
                 else{
-                    alert("Tous les bulletin ont été inséré");
+                    location.href = 'http://54.152.100.182/e-temoins/success.php'
                 }
             }).catch((error)=>{
-                alert("Bulleting non inseré");
+                alert("Erreur lors du bulletin non inséré");
                 console.error(error);
             }).finally(()=>{
                 setLoading(false);
