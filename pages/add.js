@@ -2,7 +2,8 @@ import Head from 'next/head';
 import axios from 'axios';
 import React from 'react'
 import LoadingText from '../src/components/LoadingText'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Uploadify from '../src/components/Uploadify'
 
 export default function Add(){
     let formRef = React.createRef(),
@@ -103,7 +104,8 @@ export default function Add(){
                         <LoadingText className={loadingClass} />
                         <form ref={formRef} onSubmit={postBulletin} className="my-2">
                             <div className="input-group">
-                                <input name='bulletins' type="file" className="imageuplodify" accept=".xlsx,.xls,image/*,.doc,audio/*,.docx,video/*,.ppt,.pptx,.txt,.pdf" multiple='true' />
+                                <input name='bulletins' type="file" className="imageuplodify" accept=".xlsx,.xls,image/*,.doc,audio/*,.docx,video/*,.ppt,.pptx,.txt,.pdf" multiple='true' style={{display:'none'}} />
+                                <Uploadify />
                             </div>
                             <div className="input-group">
                                 <textarea name='commentaire' type="text" placeholder="Observations" className="form-control" style={{borderRadius: "10px"}}></textarea>
@@ -131,12 +133,6 @@ export default function Add(){
             <script src="assets/js/settings.js"></script>
             <script src="assets/js/custom.js"></script>
             <script src="assets/vendor/imageuplodify/imageuploadify.min.js"></script>
-            {/*<script dangerouslySetInnerHTML={{__html:`
-                $(document).ready(function() {
-                    $('input[type="file"]').imageuploadify();
-                })
-            `}}>
-            </script>*/}
         </>
     )
 }
