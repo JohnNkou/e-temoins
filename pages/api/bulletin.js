@@ -43,7 +43,7 @@ export default async function Bulletin(req,res){
 					if(response.error){
 						failed.push(file.originalFilename);
 						errors.push(response.error);
-						fs.rename(file.path,`${ePath}/${file.originalFilename}`).catch((error)=>{
+						await fs.rename(file.path,`${ePath}/${file.originalFilename}`).catch((error)=>{
 							console.error(error);
 						})
 					}
