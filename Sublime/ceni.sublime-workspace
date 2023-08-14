@@ -1,0 +1,900 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Hel",
+				"Helper"
+			],
+			[
+				"Cli",
+				"Clients"
+			],
+			[
+				"Clie",
+				"Clients"
+			],
+			[
+				"Clien",
+				"Clients"
+			],
+			[
+				"cren",
+				"credentials"
+			],
+			[
+				"imp",
+				"implements"
+			],
+			[
+				"th",
+				"throws"
+			],
+			[
+				"for",
+				"fore\tfor (each)"
+			],
+			[
+				"Ser",
+				"ServerSocket"
+			],
+			[
+				"inst",
+				"instanceof"
+			],
+			[
+				"D",
+				"DatagramPacket"
+			],
+			[
+				"Conso",
+				"ConsoleClient"
+			],
+			[
+				"thro",
+				"throws"
+			],
+			[
+				"writ",
+				"writableLength"
+			],
+			[
+				"prim",
+				"primes"
+			],
+			[
+				"pri",
+				"primes"
+			],
+			[
+				"Ta",
+				"TastB"
+			],
+			[
+				"sy",
+				"synchronized"
+			],
+			[
+				"m",
+				"main\tmethod (main)"
+			],
+			[
+				"photo",
+				"photo_pv"
+			],
+			[
+				"pho",
+				"photo_2"
+			],
+			[
+				"documen",
+				"documentId"
+			],
+			[
+				"docum",
+				"documentId"
+			],
+			[
+				"Acce",
+				"Access-Control-Allow-Headers"
+			],
+			[
+				"stackLen",
+				"stackLength2"
+			],
+			[
+				"validateH",
+				"validateHeaderName"
+			],
+			[
+				"ExpressionAttr",
+				"ExpressionAttributeValues"
+			],
+			[
+				"ExpressionAttriu",
+				"ExpressionAttributeValues"
+			],
+			[
+				"ExpressionAtt",
+				"ExpressionAttributeValues"
+			],
+			[
+				"ExpressionAttri",
+				"ExpressionAttributeNames"
+			],
+			[
+				"CUSTOE",
+				"CUSTOMER_ID"
+			],
+			[
+				"custom",
+				"CUSTOMER_NAME"
+			],
+			[
+				"CUSTO",
+				"CUSTOMER_NAME"
+			],
+			[
+				"CUSTOMER_",
+				"CUSTOMER_ID"
+			],
+			[
+				"curl_set",
+				"curl_setopt_array"
+			],
+			[
+				"stylesh",
+				"stylesheets"
+			],
+			[
+				"style",
+				"stylesheet"
+			],
+			[
+				"styles",
+				"stylesheets"
+			],
+			[
+				"styleshe",
+				"stylesheetPath"
+			],
+			[
+				"styleSh",
+				"stylesheetRoot"
+			],
+			[
+				"algoNa",
+				"algoNames"
+			],
+			[
+				"fo",
+				"for\tfor … done"
+			],
+			[
+				"compo",
+				"component"
+			],
+			[
+				"comp",
+				"component"
+			],
+			[
+				"Fin",
+				"FindPropsInComponents"
+			],
+			[
+				"componen",
+				"componenents"
+			],
+			[
+				"ser",
+				"sermonCollection"
+			],
+			[
+				"par",
+				"parser3"
+			],
+			[
+				"Incoml",
+				"IncompletedQuiz"
+			],
+			[
+				"Inco",
+				"IncompletedQuiz"
+			],
+			[
+				"sta",
+				"statusCode"
+			],
+			[
+				"conten",
+				"contentLength"
+			],
+			[
+				"ren",
+				"newRenew"
+			],
+			[
+				"def",
+				"defineProperty"
+			],
+			[
+				"de",
+				"defineProperties"
+			],
+			[
+				"edit",
+				"editDistanceRecursiveWrapper"
+			],
+			[
+				"leng",
+				"length2"
+			],
+			[
+				"L",
+				"LFUDoublyLinkedList"
+			],
+			[
+				"inde",
+				"index2"
+			],
+			[
+				"foreac",
+				"foreach\tforeach …"
+			],
+			[
+				"16e",
+				"16ème"
+			],
+			[
+				"ease",
+				"ease-out"
+			],
+			[
+				"php",
+				"php"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/Users/flashbell/Node/e-temoins/pages/acceuil.js",
+			"settings":
+			{
+				"buffer_size": 7954,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/Users/flashbell/Node/e-temoins/pages/add.js",
+			"settings":
+			{
+				"buffer_size": 5854,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/flashbell/Node/e-temoins/pages/home.js",
+			"settings":
+			{
+				"buffer_size": 25529,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/flashbell/Node/e-temoins/pages/otp.js",
+			"settings":
+			{
+				"buffer_size": 5299,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/flashbell/Node/e-temoins/pages/sign.js",
+			"settings":
+			{
+				"buffer_size": 5822,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Java/Ant.sublime-build",
+					""
+				],
+				[
+					"Packages/Java/JavaC.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Java/JavaC.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Java/Ant.sublime-build",
+					""
+				],
+				[
+					"Packages/Java/JavaC.sublime-build",
+					""
+				],
+				[
+					"Packages/User/java.sublime-build",
+					""
+				],
+				[
+					"Packages/User/untitled.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/User/java.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Makefile/Make.sublime-build",
+					""
+				],
+				[
+					"Packages/Makefile/Make.sublime-build",
+					"Clean"
+				]
+			],
+			[
+				"Packages/Makefile/Make.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/ShellScript/ShellScript.sublime-build",
+					""
+				],
+				[
+					"Packages/User/untitled.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/ShellScript/ShellScript.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/Javascript.sublime-build",
+					""
+				],
+				[
+					"Packages/User/mongo.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/User/Javascript.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/Javascript.sublime-build",
+					""
+				],
+				[
+					"Packages/User/mongo.sublime-build",
+					""
+				],
+				[
+					"Packages/User/untitled.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/User/Javascript.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/mysql.sublime-build",
+					""
+				],
+				[
+					"Packages/User/untitled.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/User/mysql.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/flashbell/Node/nextjs/dump.sql",
+		"/Users/flashbell/Library/Application Support/Sublime Text 3/Packages/User/JavaScript.sublime-settings",
+		"/Users/flashbell/Documents/Testings/main.java",
+		"/Users/flashbell/Library/Application Support/Sublime Text 3/Packages/User/main.java",
+		"/Users/flashbell/Documents/Testings/main.class",
+		"/Users/flashbell/Node/Portfolio/index.html",
+		"/Users/flashbell/Node/Accountings/bootstrap.sh",
+		"/Users/flashbell/Node/index.js",
+		"/Users/flashbell/Documents/Testings/mysql2.sql",
+		"/Users/flashbell/Documents/Testings/test/index.js",
+		"/Applications/Utilities/Adobe Creative Cloud/Components/CCLibs/resources/designLibraries/resources/CreativeCloud_icon.svg",
+		"/Users/flashbell/Documents/Testings/Incompleted.txt",
+		"/Users/flashbell/Desktop/prach.html",
+		"/Users/flashbell/Desktop/r.html",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/MONTAGE_Connect_102_mac/Uninstall MONTAGE Connect.app/Contents/Info.plist",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/memoire/test.html",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/mongodb-macos-x86_64-4.4.1/bin/json/mem.js",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/memoire/aimin",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/mongodb-macos-x86_64-4.4.1/bin/json/test.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/mongodb-macos-x86_64-4.4.1/bin/json/class.js",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/memoire/Connexion.html",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/mongodb-macos-x86_64-4.4.1/bin/json/untitled.js",
+		"/Users/flashbell/.ssh/known_hosts",
+		"/Applications/MAMP/conf/apache/extra/httpd-ssl.conf",
+		"/Applications/MAMP/conf/apache/httpd.conf",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/mongodb-macos-x86_64-4.4.1/bin/json/restaurants.json",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/mongodb-macos-x86_64-4.4.1/bin/json/neighborhoods.json",
+		"/Applications/MAMP/bin/php/php7.1.6/bin/json/test.json",
+		"/Applications/MAMP/bin/php/php7.1.6/bin/json/test.php",
+		"/Applications/MAMP/bin/php/php7.1.6/bin/json/restaurants_json.json",
+		"/Applications/MAMP/bin/php/php7.1.6/bin/json/res.js",
+		"/Applications/MAMP/bin/php/php7.1.6/bin/json/neighborhoods.json",
+		"/Applications/MAMP/bin/php/php7.1.6/bin/json/restaurants_1.json",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/Max_2/Configuration/conf.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/Songs/essai.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/Songs/t.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/Songs/songs_copy.html",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/Songs/songs.html",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/Songs/cantiqueJson.js",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/Test.html",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/Songs/cantique.js",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/scull/scull.h",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/misc-progs/setconsole.c",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/usb/usb-skeleton.c",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/scull/scull.init",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/scull/access.c",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/scull/main.c",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/php-osc-master/src/Timetag.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/php-osc-master/src/OSCMessage.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/php-osc-master/src/OSCException.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/php-osc-master/src/OSCDatagram.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/php-osc-master/src/OSCClient.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/php-osc-master/src/Infinitum.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/php-osc-master/src/OSCBundle.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/php-osc-master/src/Blob.php",
+		"/Volumes/TOSHIB/Applications/MAMP/htdocs/php-osc-master/tests/OSCClientTest.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/tests/OSCClientTest.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/src/Timetag.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/src/OSCMessage.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/src/OSCException.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/src/OSCDatagram.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/src/OSCClient.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/src/OSCBundle.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/src/Infinitum.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/src/Blob.php",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/php-osc-master/composer.json",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/misc-modules/hello.c",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/misc-modules/Makefile",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/simple/simple.c",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/9780596005900-master/examples/include/lddbus.h",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/DoYourDataRecoveryForMac6.6/file/maranata.sql",
+		"/Volumes/TOSHIB/Users/flashbell/Downloads/DoYourDataRecoveryForMac6.6/file/function.php",
+		"/Applications/MAMP/htdocs/amado/shop.php",
+		"/Applications/MAMP/htdocs/amado/shop.html",
+		"/Applications/MAMP/htdocs/amado/product-details.html",
+		"/Applications/MAMP/htdocs/amado/checkout.html",
+		"/Applications/MAMP/htdocs/amado/cart.html",
+		"/Applications/MAMP/htdocs/amado/index.html",
+		"/Users/flashbell/Downloads/amado/Taches.txt",
+		"/Users/flashbell/Downloads/amado/product-details.html",
+		"/Users/flashbell/Downloads/amado/checkout.html",
+		"/Users/flashbell/Downloads/amado/cart.html",
+		"/Users/flashbell/Downloads/amado/shop.html",
+		"/Users/flashbell/Downloads/amado/index.html",
+		"/Applications/MAMP/htdocs/Max_project/Sublime/mysql.sql",
+		"/Applications/MAMP/htdocs/Songs/songs.html",
+		"/Applications/MAMP/htdocs/Songs/cantique.js",
+		"/Applications/MAMP/htdocs/Songs/song.html",
+		"/Applications/MAMP/htdocs/Songs/cantique.json",
+		"/Applications/MAMP/htdocs/Max_project/Agents/classes/Video_class.php",
+		"/Applications/MAMP/htdocs/Max_project/Agents/listevent",
+		"/Applications/MAMP/htdocs/Relaxation_music/index.php",
+		"/Applications/MAMP/htdocs/Max_project/Admin/write.php",
+		"/Applications/MAMP/htdocs/Max_project/Sublime/Max.sublime-workspace",
+		"/Applications/MAMP/htdocs/Max_project/texte.html",
+		"/Applications/MAMP/htdocs/Max_project/Biographie.html",
+		"/Applications/MAMP/htdocs/Max_project/compte.html",
+		"/Applications/MAMP/htdocs/Max_project/Orateurs.html",
+		"/Applications/MAMP/htdocs/Max_project/Video.html",
+		"/Applications/MAMP/htdocs/Max_project/contacter.html",
+		"/Applications/MAMP/htdocs/Max_project/Acceuil.html",
+		"/Applications/MAMP/htdocs/Max_project/resources.html",
+		"/Applications/MAMP/htdocs/Max_project/compte",
+		"/Applications/MAMP/htdocs/Max_project/untitled.html",
+		"/Users/flashbell/Documents/Training Odoo/Lead.csv",
+		"/Applications/MAMP/htdocs/Max_project/Artistes.html",
+		"/Users/flashbell/Documents/Training Odoo/Test.csv",
+		"/Applications/MAMP/htdocs/meilleur/website/index.php",
+		"/Applications/MAMP/htdocs/BR/Utilisateur/index.php",
+		"/Applications/MAMP/htdocs/BR/Utilisateur/Inventaire.html",
+		"/Applications/MAMP/htdocs/BR/script/contrat_handler_1.js",
+		"/Applications/MAMP/htdocs/BR/Utilisateur/info.html",
+		"/Applications/MAMP/htdocs/BR/Process/p.php",
+		"/Applications/MAMP/htdocs/BR/script/contrat_handler.js",
+		"/Applications/MAMP/htdocs/BR/script/Bar_Menu.js",
+		"/Users/flashbell/Desktop/papa.xml",
+		"/Applications/MAMP/htdocs/BR/Process/di.php",
+		"/Applications/MAMP/htdocs/BR/Admon/adminstrateur.php",
+		"/Applications/MAMP/htdocs/BR/script/sync_handler.js",
+		"/Applications/MAMP/htdocs/BR/Process/json.php",
+		"/Applications/MAMP/htdocs/BR/Utilisateur/synch.html",
+		"/Applications/MAMP/htdocs/BR/index.php",
+		"/Applications/MAMP/htdocs/BR/Offline/index.html",
+		"/Applications/MAMP/htdocs/BR/Offline/Acceuil.html",
+		"/Applications/MAMP/htdocs/BR/Br.appcache",
+		"/Applications/MAMP/htdocs/BR/Admon/supprimer.php",
+		"/Applications/MAMP/htdocs/BR/Admon/creation_utilisateur.php",
+		"/Applications/MAMP/htdocs/BR/Admon/connexion.js"
+	],
+	"find":
+	{
+		"height": 24.0
+	},
+	"find_in_files":
+	{
+		"height": 102.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/Users/flashbell/Node/e-temoins/pages/acceuil.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7954,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/Users/flashbell/Node/e-temoins/pages/add.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5854,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/flashbell/Node/e-temoins/pages/home.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 25529,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/Users/flashbell/Node/e-temoins/pages/otp.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5299,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/Users/flashbell/Node/e-temoins/pages/sign.js",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5822,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 203.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 100.0
+	},
+	"pinned_build_system": "",
+	"project": "ceni.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": false,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"/Volumes/TOSHIB/Users/flashbell/Downloads/mongodb-macos-x86_64-4.4.1/bin/json/mem.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 1
+	}
+}
