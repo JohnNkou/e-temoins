@@ -1,6 +1,6 @@
 import mysql from 'mysql';
 
-export default function dbClass(conn){
+export default function dbClass({conn,reconnect}){
 
 	function addResponse(response, error=null){ console.log('response',response);
 		return {
@@ -28,6 +28,9 @@ export default function dbClass(conn){
 		return new Promise((resolve,reject)=>{
 			conn.query(sql,params,(err,result)=>{
 				if(err){
+					if(err.fatal){
+						reconnect();
+					}
 					reject(err);
 				}
 				else{
