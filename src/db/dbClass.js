@@ -2,7 +2,29 @@ import mysql from 'mysql';
 
 export default function dbClass({conn,reconnect}){
 
-	function addResponse(response, error=null){ console.log('response',response);
+	function errorHandler(error){
+		let e = {};
+
+		if('code' in error){
+			e.code = error.code;
+		}
+		if('sqlMessage' in error){
+			e.message = error.sqlMessage;
+		}
+		else if('message' in error){
+			e.message = error.message;
+		}
+		if('name' in error){
+			e.name = error.name;
+		}
+		if('stack' in error){
+			e.stack = error.stack;
+		}
+
+		return e;
+	}
+
+	function addResponse(response, error=null){
 		return {
 			inserted: Number.isInteger(response.insertId),
 			error,
@@ -116,22 +138,69 @@ export default function dbClass({conn,reconnect}){
 	}
 
 	this.addVote = ({president=null,national=null,provincial=null, bulletinId})=>{
-		let sql = 'INSERT INTO Vote (president,national,provincial,bulletinId) VALUES(?,?,?,?)',
-		params = [president,national,provincial,bulletinId];
+		let sql = `INSERT INTO Vote SELECT id,? FROM Candidat WHERE numero = ? AND domaine = 'Presidentiel';
+			INSERT INTO Vote SELECT id,? FROM Candidat WHERE numero = ? AND domaine = 'National';
+			INSERT INTO Vote SELECT id,? FROM Candidat WHERE numero= ? AND domaine = 'Provincial'`,
+		params = [bulletinId,president,bulletinId,national, bulletinId,provincial],
+		err;
 
-		return this.do(sql,params).then(addResponse).catch((error)=>{
-			throw addResponse({}, error);
+		return new Promise((resolve,reject)=>{
+			conn.beginTransaction(async (err)=>{
+				if(err){
+					reject(err);
+				}
+				else{
+					let r= await this.do(sql,params).catch((error)=>({error}));
+
+					if(!r.error){
+						for(let i=0; i < r.length; i++){
+							if(!r[i].affectedRows){
+								err = true;
+								conn.rollback((err)=>{
+									if(err){
+										reject(err)
+									}
+									else{
+										reject(errorHandler(new Error("Bulletin invalid")));
+									}
+								})
+							}
+						}
+
+						if(!err){
+							conn.commit((err)=>{
+								if(err){
+									reject(err);
+								}
+								else{
+									resolve(addResponse(r));
+								}
+							})
+						}
+					}
+					else{
+						conn.rollback((err)=>{
+							if(err){
+								reject(err);
+							}
+							else{
+								reject(addResponse({},r.error));
+							}
+						})
+					}
+				}
+			})
 		})
 	}
 
 	this.getLeaderBoardAll = (o={})=>{
 		let { column } = o,
-		sql = `SELECT count(*) as total, CONCAT(nom,' ',prenom,' ',postnom) as noms,image, domaine FROM Candidat,Vote WHERE president=numero || national=numero || provincial=numero GROUP BY nom,numero ORDER BY total DESC`,
+		sql = `SELECT count(*) as total, CONCAT(nom,' ',prenom,' ',postnom) as noms,image, domaine FROM Candidat,Vote WHERE candidatId=Candidat.id GROUP BY nom,numero ORDER BY total DESC`,
 		domaine = (column == 'president')? 'presidentiel':column,
 		params = [];
 
 		if(column){
-			sql = `SELECT count(*) as total, CONCAT(nom,' ',prenom,' ',postnom) as noms,image, domaine,numero FROM Candidat,Vote WHERE ${column}=numero AND domaine=? GROUP BY nom,numero ORDER BY total DESC`;
+			sql = `SELECT count(*) as total, CONCAT(nom,' ',prenom,' ',postnom) as noms,image, domaine,numero FROM Candidat,Vote WHERE candidatId=Candidat.id AND domaine=? GROUP BY nom,numero ORDER BY total DESC`;
 			params.push(domaine);
 		}
 
@@ -141,7 +210,7 @@ export default function dbClass({conn,reconnect}){
 		})
 	}
 
-	this.getResume = (numero,column)=>{ console.log("numero",numero,column);
+	this.getResume = (numero,column)=>{
 		let sql = `SELECT count(*) as total, CONCAT(nom,' ',prenom,' ',postnom) as noms,image,numero, domaine FROM Candidat,Vote WHERE ${column}=numero AND ${column}=? GROUP BY nom,numero ORDER BY total DESC;
 		SELECT img from Bulletin,Vote WHERE Bulletin.id = Vote.bulletinId AND ${column}=?
 		`,
