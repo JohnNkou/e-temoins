@@ -1,10 +1,16 @@
 import { multiParse } from '../../src/helper.js'
+import { basename, extname } from 'path';
 import textract from '../../src/textract/textract.js'
 import fs from 'fs/promises';
 import conn from '../../src/db/db.js'
 import dbClass from '../../src/db/dbClass.js'
+import S3Dev from '../../src/ob/s3.js'
 
 const ROOT = process.env.ROOT;
+
+function getFileName(filePath){
+	return basename(filePath,extname(filePath));
+}
 
 export default async function Bulletin(req,res){
 	let query = req.query,
@@ -17,9 +23,11 @@ export default async function Bulletin(req,res){
 	r,
 	failed = [],
 	errors = [],
+	length,
 	upload = `${ROOT}/public/upload`,
 	bPath = `${upload}/bulletin`,
-	ePath = `${upload}/failed`;
+	ePath = `${upload}/failed`,
+	S3;
 	
 
 	if(method == 'POST'){
@@ -27,19 +35,35 @@ export default async function Bulletin(req,res){
 			res.status(500).json({ error:body.error });
 		}
 		else{
-			files = body.files.bulletins;
 
-			for(let i=0; i < files.length; i++){
+			files = body.files.bulletins;
+			length = files.length;
+
+			for(let i=0; i < length; i++){
 				file = files[i];
 				data = await fs.readFile(file.path);
-				r = await textract(data).catch((error)=> ({error}));
+				r = await textract(data).catch((error)=>({error}));
 
 				if(r.error){
 					res.status(500).json(r);
 					return;
 				}
 				else{
-					let response = await db.addBulletin({ img:file.originalFilename, commentaire:body.data.commentaire, status:'success' }).catch((error)=>({error}));
+
+					S3 = new S3Dev();
+
+					let puke = S3.putFile(getFileName(file.originalFilename),data).catch((error)=>({error})),
+					fileName = puke.fileName;
+
+					if(puke.error){
+						console.error("BIG ERROR",puke.error);
+						failed.push(file.originalFilename);
+						errors.push(puke.error);
+						continue;
+					}
+
+					let response = await db.addBulletin({ img:fileName, commentaire:body.data.commentaire, status:'success' }).catch((error)=>({error}));
+
 					if(response.error){
 						failed.push(file.originalFilename);
 						errors.push(response.error);
@@ -66,8 +90,12 @@ export default async function Bulletin(req,res){
 				}
 			}
 
+			removeFiles(files);
+
 			res.status(201).json({failed,errors});
 			res.end();
+
+				
 		}
 	}
 	else{
@@ -76,6 +104,14 @@ export default async function Bulletin(req,res){
 		}).catch((error)=>{
 			res.status(500).json(error);
 		})
+	}
+}
+
+async function removeFiles(files){
+	let length = files.length;
+
+	for(let i=0; i < length; i++){
+		await fs.rm(files[i].path).catch(console.error);
 	}
 }
 
