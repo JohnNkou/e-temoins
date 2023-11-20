@@ -14,7 +14,7 @@ command = new PutObjectCommand({
 	ContentDisposition:'inline'
 }),
 ROOT = process.env.ROOT,
-uploadDir = `${ROOT}/public/upload`,
+uploadDir = `/upload`,
 prod = process.env.NODE_ENV == 'production';
 
 function S3(){

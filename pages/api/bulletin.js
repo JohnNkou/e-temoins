@@ -1,10 +1,11 @@
 import { multiParse } from '../../src/helper.js'
 import { basename, extname } from 'path';
-import textract from '../../src/textract/textract.js'
+import textractClass from '../../src/textract/textract.js'
 import fs from 'fs/promises';
 import conn from '../../src/db/db.js'
 import dbClass from '../../src/db/dbClass.js'
 import S3Dev from '../../src/ob/s3.js'
+import { pvName } from '../../src/formNames'
 
 const ROOT = process.env.ROOT;
 
@@ -36,13 +37,14 @@ export default async function Bulletin(req,res){
 		}
 		else{
 
-			files = body.files.bulletins;
+			files = body.files[pvName];
 			length = files.length;
+			textract = new textractClass();
 
 			for(let i=0; i < length; i++){
 				file = files[i];
 				data = await fs.readFile(file.path);
-				r = await textract(data).catch((error)=>({error}));
+				r = await textract.analyzeDocument(data).catch((error)=>({error}));
 
 				if(r.error){
 					res.status(500).json(r);
@@ -60,32 +62,6 @@ export default async function Bulletin(req,res){
 						failed.push(file.originalFilename);
 						errors.push(puke.error);
 						continue;
-					}
-
-					let response = await db.addBulletin({ img:fileName, commentaire:body.data.commentaire, status:'success' }).catch((error)=>({error}));
-
-					if(response.error){
-						failed.push(file.originalFilename);
-						errors.push(response.error);
-						await fs.rename(file.path,`${ePath}/${file.originalFilename}`).catch((error)=>{
-							console.error(error);
-						})
-					}
-					else{
-						await fs.rename(file.path,`${bPath}/${file.originalFilename}`);
-
-						let r2 = await db.addVote({ president:r.votes[0], national:r.votes[1], provincial:r.votes[2], bulletinId:response.id }).catch((error)=>({error}));
-
-						if(r2.error){
-							errors.push(r2.error);
-							let r3 = await db.updateBulletin(response.id,'failedVote').catch((error)=>({error}));
-
-							if(r3.error){
-								errors.push(r3.error);
-								res.status(500).json(r2);
-								return;
-							}
-						}
 					}
 				}
 			}

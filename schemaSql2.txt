@@ -1,0 +1,260 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:8889
+-- Generation Time: Nov 20, 2023 at 08:56 PM
+-- Server version: 5.7.39
+-- PHP Version: 7.4.33
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+--
+-- Database: `e-temoins`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Bulletin`
+--
+
+CREATE TABLE `Bulletin` (
+  `id` int(11) NOT NULL,
+  `img` varchar(200) NOT NULL,
+  `commentaire` text,
+  `status` enum('success','failed','failedVote') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Candidat`
+--
+
+CREATE TABLE `Candidat` (
+  `id` int(11) NOT NULL,
+  `nom` varchar(50) NOT NULL,
+  `prenom` varchar(50) NOT NULL,
+  `postnom` varchar(50) NOT NULL,
+  `numero` varchar(4) NOT NULL,
+  `domaine` enum('Presidentiel','National','Provincial') DEFAULT NULL,
+  `image` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Observateur`
+--
+
+CREATE TABLE `Observateur` (
+  `id` int(11) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `referencePv`
+--
+
+CREATE TABLE `referencePv` (
+  `idPv` int(11) NOT NULL,
+  `province` varchar(500) DEFAULT NULL,
+  `territoireVille` varchar(500) DEFAULT NULL,
+  `sectChefCom` varchar(1000) DEFAULT NULL,
+  `svbv` varchar(1000) DEFAULT NULL,
+  `bv` varchar(1000) DEFAULT NULL,
+  `typeElection` varchar(1000) DEFAULT NULL,
+  `totalElecteur` varchar(100) DEFAULT NULL,
+  `totalVotant` varchar(100) DEFAULT NULL,
+  `suffrage` varchar(1000) DEFAULT NULL,
+  `tauxParticipation` varchar(100) DEFAULT NULL,
+  `bulletinNonValide` varchar(100) DEFAULT NULL,
+  `bulletinBlanc` varchar(100) DEFAULT NULL,
+  `totalCandidat` varchar(100) DEFAULT NULL,
+  `candidatVoixNonNull` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `relations`
+--
+
+CREATE TABLE `relations` (
+  `id` int(11) NOT NULL,
+  `idtem` int(11) NOT NULL,
+  `idcand` int(11) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Temoin`
+--
+
+CREATE TABLE `Temoin` (
+  `id` int(11) NOT NULL,
+  `nom` varchar(50) NOT NULL,
+  `prenom` varchar(50) NOT NULL,
+  `postnom` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `role` varchar(50) DEFAULT NULL,
+  `otpcode` varchar(200) DEFAULT NULL,
+  `statuscompte` varchar(50) DEFAULT 'NO',
+  `telephone` varchar(10) NOT NULL,
+  `image` varchar(200) NOT NULL,
+  `province` varchar(70) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `voix`
+--
+
+CREATE TABLE `voix` (
+  `idVoix` int(11) NOT NULL,
+  `numCandidat` varchar(1000) DEFAULT NULL,
+  `nomCandidat` varchar(1000) DEFAULT NULL,
+  `organisation` varchar(100) DEFAULT NULL,
+  `nombreVoix` varchar(1000) DEFAULT NULL,
+  `idPV` varchar(1000) DEFAULT NULL,
+  `IdTem` varchar(1000) DEFAULT NULL,
+  `statusRelation` varchar(100) NOT NULL DEFAULT 'ON',
+  `dateCreated` datetime DEFAULT NULL,
+  `localisation` varchar(1000) DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Vote`
+--
+
+CREATE TABLE `Vote` (
+  `candidatId` int(11) DEFAULT NULL,
+  `bulletinId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `Bulletin`
+--
+ALTER TABLE `Bulletin`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `Candidat`
+--
+ALTER TABLE `Candidat`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `numero` (`numero`,`domaine`);
+
+--
+-- Indexes for table `Observateur`
+--
+ALTER TABLE `Observateur`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `referencePv`
+--
+ALTER TABLE `referencePv`
+  ADD PRIMARY KEY (`idPv`);
+
+--
+-- Indexes for table `relations`
+--
+ALTER TABLE `relations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `Temoin`
+--
+ALTER TABLE `Temoin`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `voix`
+--
+ALTER TABLE `voix`
+  ADD PRIMARY KEY (`idVoix`);
+
+--
+-- Indexes for table `Vote`
+--
+ALTER TABLE `Vote`
+  ADD UNIQUE KEY `candidatId` (`candidatId`,`bulletinId`),
+  ADD KEY `bulletinId` (`bulletinId`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `Bulletin`
+--
+ALTER TABLE `Bulletin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Candidat`
+--
+ALTER TABLE `Candidat`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Observateur`
+--
+ALTER TABLE `Observateur`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `referencePv`
+--
+ALTER TABLE `referencePv`
+  MODIFY `idPv` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `relations`
+--
+ALTER TABLE `relations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Temoin`
+--
+ALTER TABLE `Temoin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `voix`
+--
+ALTER TABLE `voix`
+  MODIFY `idVoix` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `Vote`
+--
+ALTER TABLE `Vote`
+  ADD CONSTRAINT `vote_ibfk_1` FOREIGN KEY (`candidatId`) REFERENCES `Candidat` (`id`),
+  ADD CONSTRAINT `vote_ibfk_2` FOREIGN KEY (`bulletinId`) REFERENCES `Bulletin` (`id`);
+COMMIT;
