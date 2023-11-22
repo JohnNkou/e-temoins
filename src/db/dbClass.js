@@ -3,8 +3,6 @@ import { pvRef } from '../conversion.js'
 import Options from './db.js'
 import fs from 'fs/promises';
 
-//let data = JSON.parse((await fs.readFile('../textract/an.json')).toString());
-
 export default function dbClass({conn,reconnect}){
 
 	function errorHandler(error){
@@ -100,6 +98,8 @@ export default function dbClass({conn,reconnect}){
 					return reject(error);
 				}
 
+				let payload;
+
 				try{
 					let response = await this.do(sql,params),
 					inserted = response.affectedRows,
@@ -118,19 +118,27 @@ export default function dbClass({conn,reconnect}){
 						response = await this.do(sql,params);
 
 						if(response.affectedRows == idCandidats.length){
-							resolve(addResponse(response));
+							payload = addResponse(response);
 						}
 						else{
 							console.error("THe number of row inserted is different than the number of candidats");
 							console.error(response,idCandidats);
-							conn.rollback(()=>{
+							return conn.rollback(()=>{
 								resolve(addResponse({affectedRows:0}));
 							})
 						}
 					}
 					else{
-						resolve(addResponse(response));
+						payload = addResponse(response);
 					}
+
+					conn.commit((err)=>{
+						if(err){
+							return reject(err);
+						}
+
+						resolve(payload);
+					})
 				}
 				catch(e){
 					console.error("Error",e);
@@ -174,7 +182,7 @@ export default function dbClass({conn,reconnect}){
 		let sql = 'INSERT INTO referencePV(--) VALUES(---)',
 		puke = [],
 		params = [],
-		domaine,length,table,
+		domaine,tablesLength,
 		added = 0;
 
 		forms.forEach((form)=>{
@@ -196,8 +204,10 @@ export default function dbClass({conn,reconnect}){
 		sql = sql.replace('--',puke.join(','));
 		sql = sql.replace('---', puke.map(()=> '?').join(','));
 
-		console.log(sql);
-		console.log('DOMAINE IS',domaine);
+		//console.log(mysql.format(sql,params));
+		//console.log('');
+		//console.log('DOMAINE IS',domaine);
+		//console.log('');
 
 		return new Promise((resolve,reject)=>{
 			conn.beginTransaction(async (error)=>{
@@ -209,32 +219,52 @@ export default function dbClass({conn,reconnect}){
 					let response = await this.do(sql,params),
 					idPv = response.insertId;
 
-					length = tables[1].length;
+					tablesLength = tables.length;
 
-					for(let i=1; i < length; i++){
-						table = tables[1][i];
-						let numero = table[0];
-						sql = 'INSERT INTO Voix(idCandidat,organisation,nombreVoix, idPv, idTem) SELECT Candidat.id,?,?,?,? FROM Candidat,Temoin,relations WHERE relations.idtem  = Temoin.id && Temoin.id = ? && relations.idcand = Candidat.id && Candidat.numero = ? && Candidat.domain = ?',
-						params = [table[1],table[3],idPv,idTemoin, idTemoin, numero,domaine];
+					for(let i=0; i < tablesLength; i++){
+						let table = tables[i],
+						length = table.length;
 
-						try{
-							let response = await this.do(sql,params);
-							if(!response.affectedRows){
-								console.log("Auncune donnée inserré");
+						for(let y=0; y < length; y++){
+							let row = table[y],
+							numero = parseInt(row[0]);
+							
+							if(numero !== numero){
+								console.error("Bad number given",row[0]);
+								continue;
 							}
-							else{
-								added++;
-							}
-						}
-						catch(e){
-							console.error("Error inserting table",table);
-							console.error(e);
-							throw e;
-						}
+							
+							sql = 'INSERT INTO Voix(idCandidat,organisation,nombreVoix, idPv, idTem) SELECT Candidat.id,?,?,?,? FROM Candidat,Temoin,relations WHERE relations.idtem  = Temoin.id && Temoin.id = ? && relations.idcand = Candidat.id && Candidat.numero = ? && Candidat.domain = ?',
+							params = [row[1],row[2],idPv,idTemoin, idTemoin, numero,domaine];
 
-						console.log('');
-						console.log(mysql.format(sql,params));
+							//console.log(mysql.format(sql,params));
+							//console.log('');
+
+							try{
+								let response = await this.do(sql,params);
+								if(!response.affectedRows){
+									console.log("Auncune donnée inserré");
+								}
+								else{
+									added++;
+								}
+							}
+							catch(e){
+								if(e.code != 'ER_DUP_ENTRY'){
+									console.error("Error inserting table",table);
+									console.error(e);
+									throw e;
+								}
+								else{
+									console.error("Duplicate entry found",row);
+								}
+							}
+
+							//console.log('');
+							//console.log(mysql.format(sql,params));
+						}
 					}
+
 				}
 				catch(e){
 					reject(e);
@@ -360,7 +390,9 @@ export default function dbClass({conn,reconnect}){
 	}
 }
 
-/*let me = new dbClass(Options);
+/*let data = JSON.parse((await fs.readFile('../textract/head.json')).toString());
 
-console.log(await me.addPv({...data, idTemoin:2}));
+let me = new dbClass(Options);
+
+console.log(await me.addPv({ tables:data.tables, forms:data.formResult.forms  , idTemoin:9}));
 me.close();*/
