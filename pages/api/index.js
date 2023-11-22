@@ -35,11 +35,14 @@ export default async function Bulletin(req,res){
 	bPath = `${upload}/bulletin`,
 	ePath = `${upload}/failed`,
 	S3;
+
+	res.setHeader('Access-Control-Allow-Origin','http://52.207.250.132');
+	res.setHeader('Access-Control-Allow-Methods','POST');
 	
 
 	if(method == 'POST'){
 		if(body.error){
-			res.status(500).json({ error:body.error });
+			res.status(500).json({ success:'0', msg: body.error.toString() , error:body.error });
 		}
 		else{
 
@@ -51,19 +54,19 @@ export default async function Bulletin(req,res){
 
 			if(!ref || !ref.length){
 				return res.status(400).json({
-					success:false,
+					success:'0',
 					msg:"Aucun fichier references trouvé"
 				})
 			}
 			else if(!voix || !voix.length){
 				return res.status(400).json({
-					success:false,
+					success:'0',
 					msg: "Aucun fichier des voix"
 				})
 			}
 			else if(!preuve || !preuve.length){
 				return res.status(400).json({
-					success:false,
+					success:'0',
 					msg:"Aucun fichier de preuve donnée"
 				})
 			}
@@ -88,7 +91,7 @@ export default async function Bulletin(req,res){
 			}
 			else if(r.missing.length){
 				return res.status(400).json({
-					success:true,
+					success:'1',
 					msg:"Le fichier references manque les donnée suivante " + r.missing.join(',')
 				})
 			}
@@ -119,20 +122,27 @@ export default async function Bulletin(req,res){
 			}
 			else{
 				res.status(201).json({
-					success:true,
-					msg:'Données inserées'
+					success:'1',
+					msg:'Données inserées',
+					data:'success.php'
 				});
 			}
 
 			removeFiles(files);
 		}
 	}
-	else{
+
+	else if(method == 'GET'){
 		await db.getBulletins(query).then((response)=>{
 			res.status(200).json(response);
 		}).catch((error)=>{
 			res.status(500).json(error);
 		})
+	}
+	else{
+		console.log('method',method);
+		console.log('headers',req.headers);
+		res.status(501).send('');
 	}
 }
 
