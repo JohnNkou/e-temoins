@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"ROOT=`pwd` npx next dev -p 8080",
+    "dev": "ROOT=`pwd` npx next dev -p 8080",
     "prod": "s3Bucket=e-temoins ROOT=`pwd` npx next start -p 8080",
-    "build":"npx next build"
+    "build": "npx next build"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/gauthierntudi/e-temoins#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.456.0",
     "@aws-sdk/client-textract": "^3.385.0",
     "axios": "^1.4.0",
     "multiparty": "^4.2.3",
