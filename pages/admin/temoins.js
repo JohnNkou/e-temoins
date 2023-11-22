@@ -5,12 +5,15 @@ import App from '../../src/views/main/App'
 import CommonScript from '../../src/components/CommonScript';
 
 let apiUrl = '/api/temoin',
+apiUrl2 = '/api/candidat',
 customLink = <link href="/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet" />;
 
 export default function Temoin(){
-	let [candidats, setCandidats] = useState([]),
+	let [temoins, setTemoins] = useState([]),
+	[candidats, setCandidats] = useState([]),
 	[options] = useState(["","Kinshasa","Bandundun","Equateur"]),
 	[selected,setSelected] = useState(''),
+	[selected2, setSelected2] = useState({}),
 	[showModal,setShowModal] = useState(false),
 	formRef = React.createRef(),
 	modalClass = `modal fade ${(showModal)? 'show':''}`,
@@ -20,9 +23,18 @@ export default function Temoin(){
 		axios.get(apiUrl).then((response)=>{
 			let payload = response.data;
 
+			setTemoins(payload.data);
+		}).catch((error)=>{
+			alert("Erreur on fetching Temoint");
+			console.error(error);
+		})
+
+		axios.get(apiUrl2).then((response)=>{
+			let payload = response.data;
+
 			setCandidats(payload.data);
 		}).catch((error)=>{
-			alert("Erreur on fetch candidat");
+			alert("Error fetching Candidats");
 			console.error(error);
 		})
 	},[true])
@@ -37,29 +49,14 @@ export default function Temoin(){
 		length = els.length,
 		el;
 
-		for(let i=0; i < length; i++){
-			el = els[i];
-
-			if(el.tagName && el.name){
-				if(!el.value){
-					missed = true;
-					console.log('element',el.name,'missed',el.value);
-				}
-			}
-		}
-
-		if(missed){
-			alert("Completez toute les valeur");
-		}
-		else{
-			axios.post(apiUrl,form).then((response)=>{
-				console.log("Great",response);
-				alert("Temoin inseré avec success");
-			}).catch((error)=>{
-				console.error(error);
-				alert("Erreur pendant l'insertiong du temoin");
-			})
-		}
+		axios.post(apiUrl,form).then((response)=>{
+			console.log("Great",response);
+			alert("Temoin inseré avec success");
+			form.reset();
+		}).catch((error)=>{
+			console.error(error);
+			alert("Erreur pendant l'insertiong du temoin");
+		})
 	};
 
 	function handler(event){
@@ -79,7 +76,7 @@ export default function Temoin(){
 						<div className="container-fluid">
 							<div className="d-flex flex-wrap mb-4 row">
 								<div className="col-xl-3 col-lg-4 mb-2">
-									<h6 className="text-black fs-16 font-w600 mb-1">{candidats.length} Temoinss</h6>
+									<h6 className="text-black fs-16 font-w600 mb-1">{temoins.length} Temoinss</h6>
 									<span className="fs-14">Based your preferences</span>
 								</div>
 								<div className="col-xl-9 col-lg-8 d-flex flex-wrap">
@@ -119,7 +116,7 @@ export default function Temoin(){
 												</tr>
 											</thead>
 											<tbody>
-												{candidats.map((candidat,i)=>{
+												{temoins.map((candidat,i)=>{
 													return <tr key={i}>
 																<td>
 																	<div className="checkbox me-0 align-self-center">
@@ -168,27 +165,27 @@ export default function Temoin(){
 	                                                </div>
 	                                                <div className="modal-body">
 					                                        <div className="mb-3">
-					                                            <input name='nom' type="text" className="form-control input-default " placeholder="Nom" />
+					                                            <input name='nom'required type="text" className="form-control input-default " placeholder="Nom" />
 					                                        </div>
 					                                        <div className="mb-3">
-					                                            <input name='prenom' type="text" className="form-control input-default " placeholder="Prenom" />
+					                                            <input name='prenom' required type="text" className="form-control input-default " placeholder="Prenom" />
 					                                        </div>
 					                                        <div className="mb-3">
-					                                            <input name='postnom' type="text" className="form-control input-default " placeholder="PostNom" />
+					                                            <input name='postnom' required type="text" className="form-control input-default " placeholder="PostNom" />
 					                                        </div>
 					                                        <div className="mb-3">
-					                                            <input name='password' type="password" className="form-control input-default " placeholder="Mot de passe" />
+					                                            <input name='password' required type="password" className="form-control input-default " placeholder="Mot de passe" />
 					                                        </div>
 					                                        <div className="mb-3">
-					                                            <input name='email' type="email" className="form-control input-default " placeholder="Email" />
+					                                            <input name='email' required type="email" className="form-control input-default " placeholder="Email" />
 					                                        </div>
 					                                        <div className="mb-3">
-					                                            <input name='telephone' type="telephone" className="form-control input-default " placeholder="Telephone" />
+					                                            <input name='telephone' required type="telephone" className="form-control input-default " placeholder="Telephone" />
 					                                        </div>
 					                                        <div className="mb-3">
 					                                            <label>Province </label>
 					                                            <div className="dropdown bootstrap-select default-select form-control wide mb-3">
-					                                            	<select value={selected} name='province' className="default-select form-control wide mb-3" tabIndex="null">
+					                                            	<select required value={selected} name='province' className="default-select form-control wide mb-3" tabIndex="null">
 					                                            		{options.map((opt,i)=>{
 					                                            			return <option value={opt} key={i}>{opt}</option>
 					                                            		})}
@@ -221,11 +218,20 @@ export default function Temoin(){
 																	</div>
 																</div>
 					                                        </div>
+					                                        <div className="mb-3">
+					                                            <label className='me-3 align-middle'>Relier candidats </label>
+					                                            <select multiple name='idCandidats' className='align-middle' required>
+					                                            	<option value=''></option>
+					                                            	{candidats.map((candidat)=>{
+					                                            		return <option value={candidat.id}>{candidat.noms}</option>
+					                                            	})}
+					                                            </select>
+					                                        </div>
 					                                    	<div className='mb-3'>
 					                                        	<div className="input-group mb-3">
 																	<button className="btn btn-primary btn-sm" type="button">Image</button>
 						                                            <div className="form-file">
-						                                                <input name='image' type="file" className="form-file-input form-control" />
+						                                                <input required name='image' type="file" className="form-file-input form-control" />
 						                                            </div>
 						                                        </div>
 					                                        </div>

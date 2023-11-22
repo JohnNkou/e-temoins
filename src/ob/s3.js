@@ -4,15 +4,15 @@ import fs from 'fs/promises';
 
 process.env.s3Bucket = 'e-temoins';
 
-let file = await fs.readFile('/Users/alainkashoba/Downloads/image.png'),
+let //file = await fs.readFile('/Users/alainkashoba/Downloads/image.png'),
 bucketName = process.env.s3Bucket,
 client = new S3Client(config),
-command = new PutObjectCommand({
+/*command = new PutObjectCommand({
 	Bucket: bucketName,
 	Key:'bulletins/success/image.png',
 	Body: file,
 	ContentDisposition:'inline'
-}),
+}),*/
 ROOT = process.env.ROOT,
 uploadDir = `/upload`,
 prod = process.env.NODE_ENV == 'production';

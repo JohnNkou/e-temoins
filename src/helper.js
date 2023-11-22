@@ -11,12 +11,18 @@ export function multiParse(req){
 			if(error){
 				return reject(error);
 			}
+
 			for(let name in fields){
-				data[name] = fields[name][0];
+				if(fields[name].length == 1){
+					data[name] = fields[name][0];
+				}
+				else{
+					data[name] = fields[name];
+				}
 			}
 			for(let name in files){
 				file = files[name][0];
-				data[name] = file.originalFilename;
+				data[name] = file.originalFilename; console.log('file',file);
 				removePath.push([file.path,file.originalFilename]);
 			}
 

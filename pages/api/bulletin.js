@@ -5,7 +5,7 @@ import fs from 'fs/promises';
 import conn from '../../src/db/db.js'
 import dbClass from '../../src/db/dbClass.js'
 import S3Dev from '../../src/ob/s3.js'
-import { pvName } from '../../src/formNames'
+import { pvName } from '../../src/formNames.js'
 
 const ROOT = process.env.ROOT;
 
@@ -22,8 +22,10 @@ export default async function Bulletin(req,res){
 	file,
 	data,
 	r,
+	missing = [],
 	failed = [],
 	errors = [],
+	added,
 	length,
 	upload = `${ROOT}/public/upload`,
 	bPath = `${upload}/bulletin`,
@@ -52,6 +54,14 @@ export default async function Bulletin(req,res){
 				}
 				else{
 
+					missing = missing.concat(r.fKeys, r.tHead);
+
+					if(missing.length){
+						return res.status(400).json({ error:{
+							message:'Le elements suivant manquent: '+missing.join(',')
+						} })
+					}
+
 					S3 = new S3Dev();
 
 					let puke = S3.putFile(getFileName(file.originalFilename),data).catch((error)=>({error})),
@@ -63,12 +73,21 @@ export default async function Bulletin(req,res){
 						errors.push(puke.error);
 						continue;
 					}
+
+					let rr = await db.addPv({...r, idTemoin:null}).catch((error)=>({error}));
+
+					if(rr.error){
+						errors.push(rr.errors);
+					}
+					else{
+						added = rr.added;
+					}
 				}
 			}
 
 			removeFiles(files);
 
-			res.status(201).json({failed,errors});
+			res.status((failed.length || errors.length)? 200: 201).json({failed,errors,added});
 			res.end();
 
 				

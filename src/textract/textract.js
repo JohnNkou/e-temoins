@@ -7,11 +7,11 @@ const config = {
    collectionName:(process.env.TESTING)? 'FF':'Dev'
 },
 client = new TextractClient(config),
-file = await fs.readFile('/Users/alainkashoba/Downloads/bulletin.jpeg'),
+//file = await fs.readFile('/Users/flashbell/Downloads/bulletin.jpeg'),
 formKeys = ['Candidats ayant obtenu au moins une voix', 'BV', 'Bulletins de vote non-valides', 'SV.bv', 'Total Candidats', 'Taux de Participation', 'Suffrages valablement Exprimés', 'Total Electeurs sur la liste', 'Total des Votants sur la liste', 'Territoires Villes','sect_chef_com', 'Provinces'],
 tableHead = ['No.', 'Organisations', 'Candidats', 'Voix'],
-AllRegex = /[^A-ZÀ-Ž\s-._]/ig,
-response = JSON.parse((await fs.readFile('/Users/alainkashoba/Node/e-temoins/src/textract/response.json')).toString());
+AllRegex = /[^A-ZÀ-Ž\s-._]/ig/*,
+response = JSON.parse((await fs.readFile('/Users/flashbell/Node/e-temoins/src/textract/response.json')).toString())*/;
 
 export default class textract{
    constructor(){
@@ -36,7 +36,7 @@ export default class textract{
             },
             FeatureTypes: ['TABLES','FORMS']
          }),
-         //response = await client.send(command),
+         response = await client.send(command),
          blocks = response.Blocks,
          ids,datas;
 
@@ -90,6 +90,7 @@ export default class textract{
 
                      if(tHead.indexOf(text) != -1){
                         let index = tHead.indexOf(text);
+                        tables[indexTable][row][col] = tHead[index];
                         tHead.splice(index,1);
                      }
                   })
@@ -113,6 +114,7 @@ export default class textract{
 
                      if(fKeys.indexOf(key) != -1){
                         let index = fKeys.indexOf(key);
+                        key = fKeys[index];
                         fKeys.splice(index,1);
                      }
 
@@ -129,6 +131,9 @@ export default class textract{
    }
 }
 
-let t = new textract();
+/*let t = new textract(),
+d = await t.analyzeDocument(file);
 
-console.log(await t.analyzeDocument(file));
+fs.writeFile('an.json',JSON.stringify(d));
+
+//console.log(await t.analyzeDocument(file));*/

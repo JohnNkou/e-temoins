@@ -1,0 +1,16 @@
+export const pvRef = {
+	"Provinces":{ name:'province' },
+	"Territoires Villes": { name:'territoireVille' },
+	"sect_chef_com":{ name:'sectChefCom' },
+	"SV.bv": { name:'svbv' },
+	"BV":{ name:'bv' },
+	"Elections Législatives Nationales": { name:'typeElection', conversion:(key,value)=> key.split(' ').pop() },
+	"Total Electeurs sur la liste":{ name:'totalElecteur' },
+	"Suffrages valablement Exprimés": { name:'suffrage' },
+	"Taux de Participation": { name:'tauxParticipation' },
+	"Bulletins de vote non-valides":{ name:'bulletinNonValide' },
+	"Bulletins Blancs": { name:'bulletinBlanc' },
+	"Total Candidats": { name: 'totalCandidat'},
+	"Candidats ayant obtenu au moins une voix":{ name:'candidatVoixNonNull' },
+	"Total des Votants sur la liste":null,
+}

@@ -19,12 +19,14 @@ export default async function Candidat(req,res){
 	}
 	else if(req.method == 'POST'){
 		console.log(form);
-		await db.addTemoin(form.data).then(async (response)=>{
-			res.status((response.inserted)? 201:200).json(response);
+		form.data.role = 'temoin';
+		await db.addUser(form.data).then(async (response)=>{
 			for(let i = 0; i < form.removePath.length; i++){
 				let path = form.removePath[i];
+				console.log('path',path);
 				console.log(await fs.rename(path[0],`/Users/flashbell/Node/e-temoins/public/upload/${path[1]}`))
 			}
+			res.status((response.inserted)? 201:200).json(response);
 		}).catch(async (error)=>{
 			res.status(500).json(error);
 			for(let i=0; i < form.removePath.length; i++){

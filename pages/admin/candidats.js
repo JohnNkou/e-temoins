@@ -10,7 +10,7 @@ customLink = <link href="/vendor/datatables/css/jquery.dataTables.min.css" rel="
 
 export default function Candidat(){
 	let [candidats, setCandidats] = useState([]),
-	[options] = useState(["","Presidentiel","National","Provincial"]),
+	[options] = useState(["","Presidentielles","Nationales","Provinciales"]),
 	[selected,setSelected] = useState(""),
 	[showModal,setShowModal] = useState(false),
 	formRef = React.createRef(),

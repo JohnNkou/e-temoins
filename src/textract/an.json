@@ -1,0 +1,10 @@
+{
+	"tables":
+		[
+			[["Total Electeurs sur la liste","578"],["Total des Votants sur la liste","270"],["Suffrages valablement Exprimés","270"],["Taux de Participation","46,71° %"],["Bulletins de vote non-valides","0"],["Bulletins Blancs","0"],["Total Candidats","177"],["Candidats ayant obtenu au moins une voix","63"]],
+		[["No.","Organisations","Candidats","Voix","Voix Urne"],["169","UNC","MAKOLO KOTAMBOLA","100"],["129","APC","KATUMBI KOTOKALE","70"],["19","APC","MALIBA KAMBA NGYA","50"],["1","UDPS","KIBASA KABAMBA","49"],["21","AFDC A","KIBALI KALENGAY JULES","1"],["54","UDPS","KIKUNI YVAN","0"],["154","AAD","ELIKYA ANDEKA","0"],["101","ADRP","TIKA TOMEKA PAUL","0"],["100","ADRC","ELONGA EZALI","0"],["18","ENSEMBLE","NDALA JACKIE","0"],["99","AFC","ESENGE KELI BOB","0"]]
+		],
+	"forms":[
+		["Taux de Participation","46,71°"],["Total Candidats","177"],["Bulletins Blancs","0"],["Candidats ayant obtenu au moins une voix","63"],["Total Electeurs sur la liste","578"],["Suffrages valablement Exprimés","270"],["Bulletins de vote non-valides","0"],["Total des Votants sur la liste","270"],["Provinces","Nord-Kivu"],["SV.bv","INSTITUT"],["Territoires Villes","Goma"],["sect_chef_com","KARISIMBI"],["BV","610018-D"],["Elections Législatives Nationales","2018"]],
+	"fKeys":[],
+	"tHead":[]}

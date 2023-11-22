@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"ROOT=`pwd` npx next dev",
+    "dev":"ROOT=`pwd` npx next dev -p 8080",
     "prod": "s3Bucket=e-temoins ROOT=`pwd` npx next start -p 8080",
     "build":"npx next build"
   },

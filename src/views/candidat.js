@@ -56,7 +56,7 @@ export default function Candidat(){
 																		</td>
 																		<td>{candidat.noms}</td>
 																		<td>{candidat.numero}</td>
-																		<td>{candidat.domaine}</td>
+																		<td>{candidat.domain}</td>
 																	</tr>
 														})}
 													</tbody>

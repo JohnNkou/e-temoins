@@ -1,4 +1,9 @@
 import mysql from 'mysql';
+import { pvRef } from '../conversion.js'
+import Options from './db.js'
+import fs from 'fs/promises';
+
+//let data = JSON.parse((await fs.readFile('../textract/an.json')).toString());
 
 export default function dbClass({conn,reconnect}){
 
@@ -26,7 +31,7 @@ export default function dbClass({conn,reconnect}){
 
 	function addResponse(response, error=null){
 		return {
-			inserted: Number.isInteger(response.insertId),
+			inserted: response.affectedRows > 0 ,
 			error,
 			id:response.insertId
 		}
@@ -41,7 +46,7 @@ export default function dbClass({conn,reconnect}){
 
 	function updResponse(response,error = null){
 		return {
-			updated: Boolean(response.affectedRows),
+			updated: response.affectedRows > 0 ,
 			error
 		}
 	}
@@ -63,7 +68,7 @@ export default function dbClass({conn,reconnect}){
 	}
 
 	this.addCandidat = ({nom,prenom,postnom,numero,domaine,image})=>{
-		let sql = 'INSERT INTO Candidat(nom,prenom,postnom,numero,domaine,image) VALUES(?,?,?,?,?,?)',
+		let sql = 'INSERT INTO Candidat(nom,prenom,postnom,numero,domain,image) VALUES(?,?,?,?,?,?)',
 		params = [nom,prenom,postnom,numero,domaine,image];
 
 		return this.do(sql,params).then(addResponse).catch((error)=>{
@@ -72,7 +77,7 @@ export default function dbClass({conn,reconnect}){
 	}
 
 	this.getCandidates = ({total})=>{
-		let sql = `SELECT CONCAT(nom,' ',prenom,' ',postnom) AS noms,numero,domaine,image,id FROM Candidat`,
+		let sql = `SELECT id,CONCAT(nom,' ',prenom,' ',postnom) AS noms,numero,domain,image,id FROM Candidat`,
 		sql2 = "SELECT count(*) as total FROM Candidat";
 
 		if(total){
@@ -84,9 +89,57 @@ export default function dbClass({conn,reconnect}){
 		})
 	}
 
-	this.addTemoin = ({nom,prenom,postnom,password,email,telephone,image, province})=>{
-		let sql = 'INSERT INTO Temoin(nom,prenom,postnom,password,email,telephone,image,province) VALUES(?,?,?,?,?,?,?,?)',
-		params = [nom,prenom,postnom,password,email,telephone,image,province];
+	this.addUser = ({nom,prenom,postnom,password,email,telephone,image, province,status=0,role,idCandidats})=>{
+		let sql = 'INSERT INTO Temoin(nom,prenom,postnom,password,email,telephone,image,province,status,role) VALUES(?,?,?,?,?,?,?,?,?,?)',
+		values,
+		params = [nom,prenom,postnom,password,email,telephone,image,province,status,role];
+
+		return new Promise((resolve,reject)=>{
+			conn.beginTransaction(async (error)=>{
+				if(error){
+					return reject(error);
+				}
+
+				try{
+					let response = await this.do(sql,params),
+					inserted = response.affectedRows,
+					idTem = response.insertId;
+
+					if(inserted){
+						sql = 'INSERT INTO relations(idtem,idcand,status) VALUES ';
+						params = [];
+						values = idCandidats.map((cand)=>{
+							params.push(idTem,cand,1);
+							return `(?,?,?)`
+						}).join(',');
+
+						sql += values;
+
+						response = await this.do(sql,params);
+
+						if(response.affectedRows == idCandidats.length){
+							resolve(addResponse(response));
+						}
+						else{
+							console.error("THe number of row inserted is different than the number of candidats");
+							console.error(response,idCandidats);
+							conn.rollback(()=>{
+								resolve(addResponse({affectedRows:0}));
+							})
+						}
+					}
+					else{
+						resolve(addResponse(response));
+					}
+				}
+				catch(e){
+					console.error("Error",e);
+					conn.rollback(()=>{
+						reject(e);
+					});
+				}
+			})
+		})
 
 		return this.do(sql,params).then(addResponse).catch((error)=>{
 			throw addResponse({},error);
@@ -94,8 +147,8 @@ export default function dbClass({conn,reconnect}){
 	}
 
 	this.getTemoins = ({total})=>{
-		let sql = "SELECT CONCAT(nom,' ',prenom,' ',postnom) AS noms, email,telephone,image,province FROM Temoin",
-		sql2 = "SELECT count(*) as total FROM Temoin";
+		let sql = "SELECT nom,prenom,postnom, email,telephone,image,province FROM Temoin WHERE role = 'temoin'",
+		sql2 = "SELECT count(*) as total FROM Temoin WHERE role='temoin'";
 
 		if(total){
 			sql = sql2;
@@ -106,26 +159,103 @@ export default function dbClass({conn,reconnect}){
 		})
 	}
 
-	this.getBulletins = ({total})=>{
-		let sql = 'SELECT count(*) as total FROM Bulletin',
-		sql2 = 'SELECT * FROM Bulletin';
+	this.getPvs = ()=>{
+		let sql = 'SELECT * FROM referencePV;',
+		sql2 = 'SELECT count(*) as total FROM referencePV';
 
-		if(!total){
-			sql = sql2;
-		}
+		sql += sql2;
 
 		return this.do(sql).then(getResponse).catch((error)=>{
 			throw getResponse([],error);
 		})
 	}
 
-	this.addBulletin = ({img,commentaire,status})=>{
-		let sql = 'INSERT INTO Bulletin(img,commentaire,status) VALUES(?,?,?)',
-		params = [img,commentaire,status];
+	this.addPv = ({tables,forms,idTemoin})=>{
+		let sql = 'INSERT INTO referencePV(--) VALUES(---)',
+		puke = [],
+		params = [],
+		domaine,length,table,
+		added = 0;
 
-		return this.do(sql,params).then(addResponse).catch((error)=>{
-			throw addResponse({},error);
+		forms.forEach((form)=>{
+			let key = form[0],
+			value = form[1],
+			current = pvRef[key];
+
+			if(current){
+				if(current.conversion){
+					value= current.conversion(key,value);
+					domaine = value;
+				}
+				key = current.name;
+				puke.push(key);
+				params.push(value);
+			}
+		});
+
+		sql = sql.replace('--',puke.join(','));
+		sql = sql.replace('---', puke.map(()=> '?').join(','));
+
+		console.log(sql);
+		console.log('DOMAINE IS',domaine);
+
+		return new Promise((resolve,reject)=>{
+			conn.beginTransaction(async (error)=>{
+				if(error){
+					return reject(error);
+				}
+
+				try{
+					let response = await this.do(sql,params),
+					idPv = response.insertId;
+
+					length = tables[1].length;
+
+					for(let i=1; i < length; i++){
+						table = tables[1][i];
+						let numero = table[0];
+						sql = 'INSERT INTO Voix(idCandidat,organisation,nombreVoix, idPv, idTem) SELECT Candidat.id,?,?,?,? FROM Candidat,Temoin,relations WHERE relations.idtem  = Temoin.id && Temoin.id = ? && relations.idcand = Candidat.id && Candidat.numero = ? && Candidat.domain = ?',
+						params = [table[1],table[3],idPv,idTemoin, idTemoin, numero,domaine];
+
+						try{
+							let response = await this.do(sql,params);
+							if(!response.affectedRows){
+								console.log("Auncune donnée inserré");
+							}
+							else{
+								added++;
+							}
+						}
+						catch(e){
+							console.error("Error inserting table",table);
+							console.error(e);
+							throw e;
+						}
+
+						console.log('');
+						console.log(mysql.format(sql,params));
+					}
+				}
+				catch(e){
+					reject(e);
+					return conn.rollback(()=>{});
+				}
+
+				conn.commit((err)=>{
+					if(err){
+						conn.rollback(()=>{});
+						reject(err);
+					}
+					else{
+						resolve({added});
+					}
+				})
+			})
 		})
+
+		/*return this.do(sql,params).then(addResponse).catch((error)=>{
+			throw addResponse({},error);
+		})*/
 	}
 
 	this.updateBulletin = (id,status)=>{
@@ -220,4 +350,17 @@ export default function dbClass({conn,reconnect}){
 			throw getResponse([],error);
 		})
 	}
+
+	this.close = ()=>{
+		conn.end((err)=>{
+			if(err){
+				console.error(err);
+			}
+		})
+	}
 }
+
+/*let me = new dbClass(Options);
+
+console.log(await me.addPv({...data, idTemoin:2}));
+me.close();*/
