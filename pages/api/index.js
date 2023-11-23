@@ -39,13 +39,6 @@ export default async function Bulletin(req,res){
 	ePath = `${upload}/failed`,
 	S3;
 
-	res.setHeader('Access-Control-Allow-Origin','http://127.0.0.1');
-	res.setHeader('Access-Control-Allow-Methods','POST');
-
-	console.log('IS DEV',isDev());
-	console.log('links',voiceLink, preuveLink);
-	
-
 	if(method == 'POST'){
 
 		let sessionData = await db.getSession(sessionId).catch((error)=> ({error})),
