@@ -3,11 +3,11 @@ const config = {
 	credentials:{ accessKeyId:'AKIATNHOUSMIRJQXVKRI', secretAccessKey:'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' },
 }
 
-export const bulletinURI = "bulletins"
-export const bulletinARN = "arn:aws:s3:::e-temoins/bulletins"
-export const successURI = `${bulletinURI}/success`
-export const errorURI = `${bulletinURI}/failed`
-export const successARN = `${bulletinARN}/success`;
-export const errorARN = `${bulletinARN}/failed`
+export const pvURI = "pv"
+export const pvARN = "arn:aws:s3:::e-temoins/pv"
+export const voixARN = "arn:aws:s3:::e-temoins/voix"
+export const voixURI = `voix`
+export const preuveARN = "arn:aws:s3:::e-temoins/preuve"
+export const preuveURI = 'preuve'
 
 export default config;

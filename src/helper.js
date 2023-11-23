@@ -22,7 +22,7 @@ export function multiParse(req){
 			}
 			for(let name in files){
 				file = files[name][0];
-				data[name] = file.originalFilename; console.log('file',file);
+				data[name] = file.originalFilename;
 				removePath.push([file.path,file.originalFilename]);
 			}
 

@@ -7,21 +7,24 @@ import dbClass from '../../src/db/dbClass.js'
 import S3Dev from '../../src/ob/s3.js'
 import { pvName } from '../../src/formNames.js'
 import { success } from '../../src/names.js'
+import { getFileName, isDev } from '../../src/utils/helper.js'
+import { pvURI, pvARN, voixURI, voixARN, preuveURI, preuveARN } from '../../src/ob/config.js'
+import cookie from 'cookie'
 
 const ROOT = process.env.ROOT,
 refName = 'references',
 voiceName = 'voix',
-proofName = 'preuve';
-
-function getFileName(filePath){
-	return basename(filePath,extname(filePath));
-}
+proofName = 'preuve',
+voiceLink = (isDev())? voixURI: voixARN,
+preuveLink = (isDev())? preuveURI : preuveARN;
 
 export default async function Bulletin(req,res){
 	let query = req.query,
 	db = new dbClass(conn),
 	method = req.method,
 	body = await multiParse(req).catch((error)=> ({error})),
+	cookies = cookie.parse(req.headers.cookie || ''),
+	sessionId = cookies && cookies.sessionId,
 	files,
 	file,
 	data,
@@ -36,11 +39,28 @@ export default async function Bulletin(req,res){
 	ePath = `${upload}/failed`,
 	S3;
 
-	res.setHeader('Access-Control-Allow-Origin','http://52.207.250.132');
+	res.setHeader('Access-Control-Allow-Origin','http://127.0.0.1');
 	res.setHeader('Access-Control-Allow-Methods','POST');
+
+	console.log('IS DEV',isDev());
+	console.log('links',voiceLink, preuveLink);
 	
 
 	if(method == 'POST'){
+
+		let sessionData = await db.getSession(sessionId).catch((error)=> ({error})),
+		idTemoin;
+
+		if(sessionData.error){
+			return res.status(500).json({ success:'0', msg: error.toString(), error:sessionData.error });
+		}
+		else if(!sessionData.data.length){
+			return res.status(403).json({ success:'0', msg:'Veuillez vous authentifier' });
+		}
+		else{
+			idTemoin = sessionData.data[0].idTem;
+		}
+
 		if(body.error){
 			res.status(500).json({ success:'0', msg: body.error.toString() , error:body.error });
 		}
@@ -71,11 +91,16 @@ export default async function Bulletin(req,res){
 				})
 			}
 
-			let refFile = await fs.readFile(ref[0].path).catch((error)=> ({error})),
+			let pvName = getFileName(ref[0].path),
+			refFile = await fs.readFile(ref[0].path).catch((error)=> ({error})),
+			voiceNames = [],
 			voiceFile = await Promise.all(voix.map((v)=>{
+				voiceNames.push(`${voiceLink}/${getFileName(v.path)}`);
 				return fs.readFile(v.path).catch((error)=>({error}));
 			})),
+			preuveNames = [],
 			preuveFile = await Promise.all(preuve.map((v)=>{
+				preuveNames.push(`${preuveLink}/${getFileName(v.path)}`);
 				return fs.readFile(v.path).catch((error)=>({error}))
 			}));
 
@@ -87,7 +112,8 @@ export default async function Bulletin(req,res){
 			r = await textract.analyzeDocument({refFile,voiceFile}).catch((error)=>({error}));
 
 			if(r.error){
-				return res.status(500).json(r);
+				let er = (r.error.custom)? r.error : r;
+				return res.status(500).json(er);
 			}
 			else if(r.missing.length){
 				return res.status(400).json({
@@ -96,22 +122,10 @@ export default async function Bulletin(req,res){
 				})
 			}
 
-			S3 = new S3Dev();
-
-			S3.putFile(getFileName(ref[0].path),refFile).catch((error)=>{
-				console.log("Error while putting references file", ref[0].originalFilename);
-			});
-
-			voix.forEach((v,i)=>{
-				S3.putFile(getFileName(v.path), voiceFile[i]).catch((error)=>{
-					console.error("Error while putting voiceFile ",v.originalFilename)
-				})
-			});
-
-			let rr = await db.addPv({...r, idTemoin:null}).catch((error)=>({error}));
+			let rr = await db.addPv({...r, voiceNames, pvName, preuveNames, idTemoin}).catch((error)=>({error}));
 
 			if(rr.error){
-				errors.push(rr.errors);
+				errors.push(rr.error);
 			}
 			else{
 				added = rr.added;
@@ -121,6 +135,25 @@ export default async function Bulletin(req,res){
 				res.status(400).json(errors);
 			}
 			else{
+				S3 = new S3Dev();
+
+				S3.putPv(getFileName(ref[0].path),refFile).catch((error)=>{
+					console.log("Error while putting references file",error, ref[0].originalFilename);
+				});
+
+
+				voix.forEach((v,i)=>{
+					S3.putVoix(getFileName(v.path), voiceFile[i]).catch((error)=>{
+						console.error("Error while putting voiceFile ",error,v.originalFilename)
+					})
+				});
+
+				preuve.forEach((v,i)=>{
+					S3.putPreuve(getFileName(v.path), preuveFile[i]).catch((error)=>{
+						console.error("Error while putting preuveFile ",error,v.originalFilename)
+					});
+				});
+
 				res.status(201).json({
 					success:'1',
 					msg:'Données inserées',
@@ -140,8 +173,6 @@ export default async function Bulletin(req,res){
 		})
 	}
 	else{
-		console.log('method',method);
-		console.log('headers',req.headers);
 		res.status(501).send('');
 	}
 }

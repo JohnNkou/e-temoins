@@ -1,4 +1,4 @@
-import { TextractClient, DetectDocumentTextCommand, AnalyzeDocumentCommand } from '@aws-sdk/client-textract';
+import { TextractClient, DetectDocumentTextCommand, AnalyzeDocumentCommand, BadDocumentException,DocumentTooLargeException, InternalServerError, InvalidParameterException, ThrottlingException, UnsupportedDocumentException,TextractServiceException } from '@aws-sdk/client-textract';
 import fs from 'fs/promises';
 
 const config = {
@@ -27,7 +27,7 @@ export default class textract{
       return ids;
    }
 
-   createCommand(file,features){ console.log('features',features);
+   createCommand(file,features){
       let command = new AnalyzeDocumentCommand({
          Document:{
             Bytes:file
@@ -36,6 +36,29 @@ export default class textract{
       });
 
       return client.send(command);
+   }
+
+   exceptionHandler(error){
+      if(error instanceof TextractServiceException){
+         if(error instanceof UnsupportedDocumentException){
+            return { custom:true, msg:'Veuillez choisir un format de fichier suivant(PNG,JPEG,PDF,TIFF)' }
+         }
+         else if(error instanceof ThrottlingException){
+            return { custom:true, retry:true };
+         }
+         else if(error instanceof DocumentTooLargeException){
+            return { custom:true, msg:"Les fichiers envoyés sont trop lourd. Veuillez réduire la taille des fichiers ou envoyer moins de photos" }
+         }
+         else if(error instanceof BadDocumentException){
+            return { custom:true, msg:"Fichier image incorrect",error }
+         }
+         else{
+            return { custom:true, msg:'Une erreur est survenue lors du traitement des fichiers. Veuillez recommencer',error }
+         }
+      }
+      else{
+         return { error };
+      }
    }
 
    async analyzeDocument({ refFile, voiceFile, refResponse,voiceResponse }){
@@ -75,7 +98,9 @@ export default class textract{
          return { forms, tables, missing };
       }
       catch(error){
-         return Promise.reject({error});
+         error = this.exceptionHandler(error);
+
+         return Promise.reject(error);
       }
    }
 
@@ -162,14 +187,14 @@ export default class textract{
    }
 }
 
-/*let file = await fs.readFile('/Users/alainkashoba/Desktop/head.png'),
-file2 = await fs.readFile('/Users/alainkashoba/Desktop/voice.png'),
+/*let refFile = await fs.readFile('/Users/alainkashoba/Desktop/page.html'),
+voiceFile = await fs.readFile('/Users/alainkashoba/Desktop/page.html'),
 t = new textract(),
-refResponse = JSON.parse((await fs.readFile('response.json')).toString()),
-voiceResponse = JSON.parse((await fs.readFile('voice_0')).toString()),
-d = await t.analyzeDocument({ refFile:file, voiceFile:[file2,file2], refResponse, voiceResponse:[voiceResponse,voiceResponse] }); console.log('d',d);
+refResponse, //= JSON.parse((await fs.readFile('response.json')).toString()),
+voiceResponse, // = JSON.parse((await fs.readFile('voice_0')).toString()),
+d = await t.analyzeDocument({ refFile, voiceFile, refResponse }); console.log('d',d);
 
-fs.writeFile('head.json',JSON.stringify(d));*/
+//fs.writeFile('head.json',JSON.stringify(d));
 
 /*let file = JSON.parse((await fs.readFile('head.json')).toString());
 console.log(file.tables[0]);*/

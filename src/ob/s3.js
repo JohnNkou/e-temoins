@@ -1,5 +1,6 @@
-import config, { successURI, errorURI, successARN, errorARN } from './config.js';
+import config, { pvURI, voixURI, pvARN, voixARN, preuveURI, preuveARN } from './config.js';
 import { S3Client, PutObjectCommand, ListObjectsCommand } from '@aws-sdk/client-s3';
+import { basename } from 'path'
 import fs from 'fs/promises';
 
 process.env.s3Bucket = 'e-temoins';
@@ -14,16 +15,17 @@ client = new S3Client(config),
 	ContentDisposition:'inline'
 }),*/
 ROOT = process.env.ROOT,
-uploadDir = `/upload`,
+pvDir = `${ROOT}/public/upload/pv`,
+voixDir = `${ROOT}/public/upload/voix`,
+preuveDir = `${ROOT}/public/upload/preuve`,
 prod = process.env.NODE_ENV == 'production';
 
 function S3(){
 	let client = new S3Client(config),
 	bucketName = process.env.s3Bucket;
 
-	this.putFile = async function(name,Body){
-		let Key = `${successURI}/${name}`,
-		fileName = `${successARN}/${name}`,
+	this.putPv = async function(name,Body){
+		let Key = `${pvURI}/${name}`,
 		command = new PutObjectCommand({
 			Bucket:bucketName,
 			Key,
@@ -31,21 +33,53 @@ function S3(){
 		}),
 		result = await client.send(command);
 
-		return { fileName };
+		return true;
+	}
+
+	this.putVoix = async function(name,Body){
+		let Key = `${voixURI}/${name}`,
+		command = new PutObjectCommand({
+			Bucket:bucketName,
+			Key,
+			Body
+		}),
+		result = await client.send(command);
+
+		return true;
+	}
+
+	this.putPreuve = async function(name,Body){
+		let Key = `${preuveURI}/${name}`,
+		command = new PutObjectCommand({
+			Bucket:bucketName,
+			Key,
+			Body
+		}),
+		result = await client.send(command);
+
+		return true;
 	}
 }
 
 function fsS3(){
-	this.putFile = async function(name,Body){
-		try{
-			let fileName = `${uploadDir}/${name}`,
-			result = await fs.writeFile(fileName);
+	this.putPv = async function(name,Body){
+		let fileName = `${pvDir}/${name}`,
+		result = await fs.writeFile(fileName,Body);
 
-			return { fileName };
-		}
-		catch(e){
-			return Promise.reject(e);
-		}
+		return true;
+	}
+	this.putVoix = async function(name,Body){
+		let fileName = `${voixDir}/${name}`,
+		result = await fs.writeFile(fileName,Body);
+
+		return true;
+	}
+
+	this.putPreuve = async function(name,Body){
+		let fileName = `${preuveDir}/${name}`,
+		result = await fs.writeFile(fileName,Body);
+
+		return true;
 	}
 }
 

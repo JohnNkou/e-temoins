@@ -87,6 +87,15 @@ export default function dbClass({conn,reconnect}){
 		})
 	}
 
+	this.getSession = (sessionId)=>{
+		let sql = 'SELECT * FROM Session WHERE sessionId=?',
+		params = [sessionId];
+
+		return this.do(sql,params).then(getResponse).catch((error)=>{
+			throw getResponse([],error);
+		})
+	}
+
 	this.addUser = ({nom,prenom,postnom,password,email,telephone,image, province,status=0,role,idCandidats})=>{
 		let sql = 'INSERT INTO Temoin(nom,prenom,postnom,password,email,telephone,image,province,status,role) VALUES(?,?,?,?,?,?,?,?,?,?)',
 		values,
@@ -178,12 +187,17 @@ export default function dbClass({conn,reconnect}){
 		})
 	}
 
-	this.addPv = ({tables,forms,idTemoin})=>{
+	this.addPv = ({tables,forms,idTemoin,pvName,voiceNames,preuveNames})=>{
 		let sql = 'INSERT INTO referencePV(--) VALUES(---)',
 		puke = [],
 		params = [],
 		domaine,tablesLength,
 		added = 0;
+
+		if(tables.length != voiceNames.length){
+			console.error("The number of tables is different than the number of voices",tables.length, voiceNames.length);
+			throw new Error("Size mismatch");
+		}
 
 		forms.forEach((form)=>{
 			let key = form[0],
@@ -200,6 +214,8 @@ export default function dbClass({conn,reconnect}){
 				params.push(value);
 			}
 		});
+		puke.push('img');
+		params.push(pvName);
 
 		sql = sql.replace('--',puke.join(','));
 		sql = sql.replace('---', puke.map(()=> '?').join(','));
@@ -223,7 +239,8 @@ export default function dbClass({conn,reconnect}){
 
 					for(let i=0; i < tablesLength; i++){
 						let table = tables[i],
-						length = table.length;
+						length = table.length,
+						voice = voiceNames[i];
 
 						for(let y=0; y < length; y++){
 							let row = table[y],
@@ -263,12 +280,25 @@ export default function dbClass({conn,reconnect}){
 							//console.log('');
 							//console.log(mysql.format(sql,params));
 						}
+
+						sql = 'INSERT INTO pvFiles (idPv,file,role) VALUES(?,?,?)';
+						params = [idPv, voiceNames[i],'voix'];
+
+						await this.do(sql,params);
 					}
 
+					params = [];
+					sql = preuveNames.map((preuve)=>{
+						params.push(idPv,preuve,'preuve');
+						return `INSERT INTO pvFiles (idPv,file,role) VALUES(?,?,?)`;
+					}).join(';');
+
+					await this.do(sql,params);
 				}
 				catch(e){
-					reject(e);
-					return conn.rollback(()=>{});
+					return conn.rollback(()=>{
+						reject(e);
+					});
 				}
 
 				conn.commit((err)=>{
