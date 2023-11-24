@@ -110,7 +110,7 @@ export default async function Bulletin(req,res){
 			}
 			else if(r.missing.length){
 				return res.status(400).json({
-					success:'1',
+					success:'0',
 					msg:"Le fichier references manque les donnée suivante " + r.missing.join(',')
 				})
 			}
