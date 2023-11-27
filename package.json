@@ -24,6 +24,7 @@
     "@aws-sdk/client-s3": "^3.456.0",
     "@aws-sdk/client-textract": "^3.385.0",
     "axios": "^1.4.0",
+    "bcrypt": "^5.1.1",
     "cookie": "^0.6.0",
     "multiparty": "^4.2.3",
     "mysql": "^2.18.1",

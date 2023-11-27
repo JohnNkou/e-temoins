@@ -101,8 +101,13 @@ export default async function Bulletin(req,res){
 			//console.log('voixData',voixData);
 			//console.log('preuveData',preuveData);
 
-			let textract = new textractClass();
+			let textract = new textractClass(),
+			dateNow = Date.now(),
+			dateThen;
 			r = await textract.analyzeDocument({refFile,voiceFile}).catch((error)=>({error}));
+			dateThen = Date.now();
+
+			console.log("Traitement: " + (dateThen - dateNow) );
 
 			if(r.error){
 				let er = (r.error.custom)? r.error : r;

@@ -1,10 +1,15 @@
 import { TextractClient, DetectDocumentTextCommand, AnalyzeDocumentCommand, BadDocumentException,DocumentTooLargeException, InternalServerError, InvalidParameterException, ThrottlingException, UnsupportedDocumentException,TextractServiceException } from '@aws-sdk/client-textract';
+import { NodeHttpHandler } from '@smithy/node-http-handler'
+import { Agent } from 'http'
 import fs from 'fs/promises';
 
 const config = {
    region:'us-east-1',
    credentials:{ accessKeyId:'AKIATNHOUSMIRJQXVKRI', secretAccessKey:'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' },
-   collectionName:(process.env.TESTING)? 'FF':'Dev'
+   collectionName:(process.env.TESTING)? 'FF':'Dev',
+   requestHandler: new NodeHttpHandler({
+      httpAgent: new Agent({ keepAlive:true, keepAliveMsecs:60000 })
+   })
 },
 client = new TextractClient(config),
 formKeys = ['Candidats ayant obtenu au moins une voix', 'BV', 'Bulletins de vote non-valides', 'SV.bv', 'Total Candidats', 'Taux de Participation', 'Suffrages valablement Exprimés', 'Total Electeurs sur la liste', 'Total des Votants sur la liste', 'Territoires Villes','sect_chef_com', 'Provinces'],
@@ -12,12 +17,18 @@ tableHead = ['No.', 'Organisations', 'Candidats', 'Voix'],
 AllRegex = /[^A-ZÀ-Ž\s-._]/ig/*,
 response = JSON.parse((await fs.readFile('/Users/flashbell/Node/e-temoins/src/textract/response.json')).toString())*/;
 
-export default class textract{
-   constructor(){
-      this.analyzeDocument = this.analyzeDocument.bind(this);
+var instance;
+
+export default function textract(){
+
+   if(!instance){
+      instance = this;
+   }
+   else{
+      return instance;
    }
 
-   getIds(blocks){
+   this.getIds = function(blocks){
       let ids = {};
 
       blocks.forEach((block)=>{
@@ -27,7 +38,7 @@ export default class textract{
       return ids;
    }
 
-   createCommand(file,features){
+   this.createCommand  =  function(file,features){
       let command = new AnalyzeDocumentCommand({
          Document:{
             Bytes:file
@@ -38,7 +49,7 @@ export default class textract{
       return client.send(command);
    }
 
-   exceptionHandler(error){
+   this.exceptionHandler =  function(error){
       if(error instanceof TextractServiceException){
          if(error instanceof UnsupportedDocumentException){
             return { custom:true, msg:'Veuillez choisir un format de fichier suivant(PNG,JPEG,PDF,TIFF)' }
@@ -61,15 +72,19 @@ export default class textract{
       }
    }
 
-   async analyzeDocument({ refFile, voiceFile, refResponse,voiceResponse }){
+   this.analyzeDocument =  async function({ refFile, voiceFile, refResponse,voiceResponse }){
       try{
-         let response = refResponse ||  await this.createCommand(refFile,['FORMS']),
+         let dateNow = Date.now(),
+         response = refResponse ||  await this.createCommand(refFile,['FORMS']),
+         dateThen = Date.now(),
          blocks = response.Blocks,
          ids,formResult,
          voiceLength = voiceFile.length,
          forms = [],
          tables = [],
          missing = [];
+
+         console.log("it took ",dateThen - dateNow,"To process the datas");
 
          //console.log('response',blocks);
 
@@ -104,7 +119,7 @@ export default class textract{
       }
    }
 
-   getForm(blocks,ids){
+   this.getForm = function(blocks,ids){
       let forms = [],
       missing = [...formKeys];
 
@@ -143,7 +158,7 @@ export default class textract{
       return { forms, missing }
    }
 
-   getTables(blocks,ids){
+   this.getTables = function(blocks,ids){
       let tables = [[]],
       indexTable = 0,
       tHead = [...tableHead];
