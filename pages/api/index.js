@@ -12,9 +12,9 @@ import { pvURI, pvARN, voixURI, voixARN, preuveURI, preuveARN } from '../../src/
 import cookie from 'cookie'
 
 const ROOT = process.env.ROOT,
-refName = 'references',
-voiceName = 'voix',
-proofName = 'preuve',
+refName = 'references[]',
+voiceName = 'voix[]',
+proofName = 'preuve[]',
 voiceLink = (isDev())? voixURI: voixARN,
 preuveLink = (isDev())? preuveURI : preuveARN;
 
