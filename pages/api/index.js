@@ -22,7 +22,7 @@ export default async function Bulletin(req,res){
 	let query = req.query,
 	db = new dbClass(conn),
 	method = req.method,
-	body = await multiParse(req).catch((error)=> ({error})),
+	body,
 	cookies = cookie.parse(req.headers.cookie || ''),
 	sessionId = cookies && cookies.sessionId,
 	files,
@@ -54,12 +54,14 @@ export default async function Bulletin(req,res){
 			idTemoin = sessionData.data[0].idTem;
 		}
 
+		body = await multiParse(req).catch((error)=> ({error}));
+
 		if(body.error){
 			res.status(500).json({ success:'0', msg: body.error.toString() , error:body.error });
 		}
 		else{
 
-			files = body.files
+			files = body.files;
 			
 			let ref = files[refName],
 			voix = files[voiceName],

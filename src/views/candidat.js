@@ -2,9 +2,11 @@ import axios from 'axios';
 import { useState,useEffect } from 'react';
 
 export default function Candidat(){
-	let [candidats,setCandidats] = useState([]);
+	let [candidats,setCandidats] = useState([]),
+	[hostname, setHostname] = useState('');
 
 	useEffect(()=>{
+		setHostname(document.location.hostname);
 		axios.get('/api/candidat').then((response)=>{
 			let payload = response.data;
 
@@ -39,6 +41,16 @@ export default function Candidat(){
 													</thead>
 													<tbody>
 														{candidats.map((candidat,i)=>{
+															let imgPath;
+
+															if(candidat.image.indexOf('amazonaws') != -1){
+																imgPath = `${candidat.image}`;
+															}
+															else{
+																imgPath = `http://${hostname}/${candidat.image}`;
+															}
+
+
 															return <tr key={i}>
 																		<td>
 																			<div className="checkbox me-0 align-self-center">
@@ -51,7 +63,7 @@ export default function Candidat(){
 																		<td>{candidat.id}</td>
 																		<td>
 																			<div className="media">
-																				<img style={{width:'50px'}} src={`/profiles/${candidat.image}`} />
+																				<img width='50' src={imgPath} />
 																			</div>
 																		</td>
 																		<td>{candidat.noms}</td>

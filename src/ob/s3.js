@@ -1,4 +1,4 @@
-import config, { pvURI, voixURI, pvARN, voixARN, preuveURI, preuveARN } from './config.js';
+import config, { pvURI, voixURI, preuveURI, profilURI, preuveARN, pvARN, voixARN, profilARN } from './config.js';
 import { S3Client, PutObjectCommand, ListObjectsCommand } from '@aws-sdk/client-s3';
 import { basename } from 'path'
 import fs from 'fs/promises';
@@ -15,9 +15,10 @@ client = new S3Client(config),
 	ContentDisposition:'inline'
 }),*/
 ROOT = process.env.ROOT,
-pvDir = `${ROOT}/public/upload/pv`,
-voixDir = `${ROOT}/public/upload/voix`,
-preuveDir = `${ROOT}/public/upload/preuve`,
+pvDir = `${ROOT}/img/pv`,
+voixDir = `${ROOT}/img/voix`,
+preuveDir = `${ROOT}/img/preuve`,
+profilDir = `${ROOT}/img/profil`,
 prod = process.env.NODE_ENV == 'production';
 
 function S3(){
@@ -59,6 +60,18 @@ function S3(){
 
 		return true;
 	}
+
+	this.putProfil = async function(name,Body){
+		let Key = `${profilURI}/${name}`,
+		command = new PutObjectCommand({
+			Bucket:bucketName,
+			Key,
+			Body
+		}),
+		result = await client.send(command);
+
+		return true;
+	}
 }
 
 function fsS3(){
@@ -77,6 +90,13 @@ function fsS3(){
 
 	this.putPreuve = async function(name,Body){
 		let fileName = `${preuveDir}/${name}`,
+		result = await fs.writeFile(fileName,Body);
+
+		return true;
+	}
+
+	this.putProfil = async function(name,Body){
+		let fileName = `${profilDir}/${name}`,
 		result = await fs.writeFile(fileName,Body);
 
 		return true;

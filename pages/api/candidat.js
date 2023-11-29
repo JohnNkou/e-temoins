@@ -1,6 +1,9 @@
 import conn from '../../src/db/db.js';
 import dbClass from '../../src/db/dbClass.js'
+import { profilDir } from '../../src/ob/config.js'
+import s3 from '../../src/ob/s3.js'
 import { multiParse } from '../../src/helper.js'
+import { basename } from 'path';
 import fs from 'fs/promises'
 
 const ROOT = process.env.ROOT;
@@ -20,12 +23,24 @@ export default async function Candidat(req,res){
 		})
 	}
 	else if(req.method == 'POST'){
-		console.log(form);
+		
+		let filePath = form.files.image[0].path,
+		filename = basename(filePath);
+
+		form.data.image = `${profilDir}/${filename}`;
+
 		await db.addCandidat(form.data).then(async (response)=>{
-			res.status((response.inserted)? 201:200).json(response);
-			for(let i = 0; i < form.removePath.length; i++){
-				let path = form.removePath[i];
-				console.log(await fs.rename(path[0],`${ROOT}/public/profiles/${path[1]}`))
+			try{
+				let S3 = new s3(),
+				data = await fs.readFile(filePath);
+
+				await S3.putProfil(filename,data);
+
+				res.status((response.inserted)? 201:200).json(response);
+			}
+			catch(e){
+				console.error("Error",e);
+				res.status(500).json(e);
 			}
 		}).catch(async (error)=>{
 			res.status(500).json(error);

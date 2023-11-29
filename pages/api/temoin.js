@@ -1,8 +1,10 @@
 import conn from '../../src/db/db.js';
 import dbClass from '../../src/db/dbClass.js'
+import s3 from '../../src/ob/s3.js'
 import { multiParse } from '../../src/helper.js'
 import fs from 'fs/promises'
 import bcrypt from 'bcrypt';
+import { basename } from 'path'
 
 const ROOT = process.env.ROOT;
 
@@ -35,19 +37,32 @@ export default async function Candidat(req,res){
 		}
 		else if(req.method == 'POST'){
 			
-			form.data.role = 'temoin';
 			form.data.password = await getHash(form.data.password);
+			form.data.image = basename(form.files.image[0].path);
 
 			if(!(form.data.idCandidats instanceof Array)){
 				form.data.idCandidats = [form.data.idCandidats];
 			}
 			await db.addUser(form.data).then(async (response)=>{
-				for(let i = 0; i < form.removePath.length; i++){
-					let path = form.removePath[i];
-					console.log('path',path);
-					console.log(await fs.rename(path[0],`${ROOT}/public/upload/${path[1]}`))
+				try{
+					let S3 = new s3(),
+					filePath = form.files.image[0].path,
+					filename = basename(filePath),
+					data = await fs.readFile(filePath);
+
+					await S3.putProfil(filename,data);
+
+					for(let i = 0; i < form.removePath.length; i++){
+						let path = form.removePath[i];
+						console.log('path',path);
+						console.log(await fs.rename(path[0],`${ROOT}/public/upload/${path[1]}`))
+					}
+					res.status((response.inserted)? 201:200).json(response);
 				}
-				res.status((response.inserted)? 201:200).json(response);
+				catch(e){
+					console.error("ERror",e);
+					res.status(500).json(e);
+				}
 			}).catch(async (error)=>{
 				res.status(500).json(error);
 				for(let i=0; i < form.removePath.length; i++){
