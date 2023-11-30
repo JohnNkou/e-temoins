@@ -192,7 +192,8 @@ export default function dbClass({conn,reconnect}){
 		puke = [],
 		params = [],
 		domaine,tablesLength,
-		added = 0;
+		added = 0,
+		mustUse = [];
 
 		if(tables.length != voiceNames.length){
 			console.error("The number of tables is different than the number of voices",tables.length, voiceNames.length);
@@ -208,6 +209,9 @@ export default function dbClass({conn,reconnect}){
 				if(current.conversion){
 					value= current.conversion(key,value);
 					domaine = value;
+				}
+				if(current.use){
+					mustUse.push(value);
 				}
 				key = current.name;
 				puke.push(key);
@@ -251,8 +255,8 @@ export default function dbClass({conn,reconnect}){
 								continue;
 							}
 							
-							sql = 'INSERT INTO Voix(idCandidat,organisation,nombreVoix, idPv, idTem) SELECT Candidat.id,?,?,?,? FROM Candidat,Temoin,relations WHERE relations.idtem  = Temoin.id && Temoin.id = ? && relations.idcand = Candidat.id && Candidat.numero = ? && Candidat.domain = ?',
-							params = [row[1],row[2],idPv,idTemoin, idTemoin, numero,domaine];
+							sql = 'INSERT INTO Voix(idCandidat,organisation,nombreVoix, idPv, idTem,bv) SELECT Candidat.id,?,?,?,?,? FROM Candidat,Temoin,relations WHERE relations.idtem  = Temoin.id && Temoin.id = ? && relations.idcand = Candidat.id && Candidat.numero = ? && Candidat.domain = ?',
+							params = [row[1],row[2],idPv,idTemoin, mustUse[0], idTemoin, numero,domaine];
 
 							//console.log(mysql.format(sql,params));
 							//console.log('');

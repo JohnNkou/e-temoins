@@ -3,7 +3,7 @@ export const pvRef = {
 	"Territoires Villes": { name:'territoireVille' },
 	"sect_chef_com":{ name:'sectChefCom' },
 	"SV.bv": { name:'svbv' },
-	"BV":{ name:'bv' },
+	"BV":{ name:'bv', use:true },
 	"Elections Législatives Nationales": { name:'typeElection', conversion:(key,value)=> key.split(' ').pop() },
 	"Total Electeurs sur la liste":{ name:'totalElecteur' },
 	"Suffrages valablement Exprimés": { name:'suffrage' },
