@@ -1,0 +1,19 @@
+# Sending pvs
+
+url = "t.com/api"
+-b sessionId=12839201
+-F references[]=@/Users/alainkashoba/Desktop/head.png
+-F voix[]=@/Users/alainkashoba/Desktop/voice.png
+-F preuve[]=@/Users/alainkashoba/Desktop/screen.png
+
+url = "t.com/api"
+-b sessionId=12839201
+-F references[]=@/Users/alainkashoba/Desktop/head.png
+-F voix[]=@/Users/alainkashoba/Desktop/voice_2.png
+-F preuve[]=@/Users/alainkashoba/Desktop/screen.png
+
+url = "t.com/api"
+-b sessionId=204893028
+-F references[]=@/Users/alainkashoba/Desktop/head_3.png
+-F voix[]=@/Users/alainkashoba/Desktop/voice.png
+-F preuve[]=@/Users/alainkashoba/Desktop/screen.png
