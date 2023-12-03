@@ -84,7 +84,7 @@ export default function textract(){
          tables = [],
          missing = [];
 
-         console.log("it took ",dateThen - dateNow,"To process the datas");
+         //console.log("it took ",dateThen - dateNow,"To process the datas");
 
          //console.log('response',blocks);
 

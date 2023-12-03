@@ -5,6 +5,8 @@ export const pvRef = {
 	"SV.bv": { name:'svbv' },
 	"BV":{ name:'bv', use:true },
 	"Elections Législatives Nationales": { name:'typeElection', conversion:(key,value)=> key.split(' ').pop() },
+	"Elections Législatives Presidentielles": { name:'typeElection', conversion:(key,value)=> key.split(' ').pop() },
+	"Elections Législatives Présidentielles": { name:'typeElection', conversion:(key,value)=> key.split(' ').pop() },
 	"Total Electeurs sur la liste":{ name:'totalElecteur' },
 	"Suffrages valablement Exprimés": { name:'suffrage' },
 	"Taux de Participation": { name:'tauxParticipation' },
