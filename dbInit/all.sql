@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS tokens (
     expiration_time INT NOT NULL
 );
 
-INSERT INTO Province VALUES ('bas uele'),('equateur'),('haut katanga'),('haut lomami'),('haut uele'),('ituri'),('kasai'),('kasai central'),('kasai oriental'),('kinshasa'),('kongo central'),('kwango'),('kwilu'),('lomami'),('lualaba'),('mai ndombe'),('maniema'),('mongala'),('nord kivu'),('nord ubangi'),('sankuru'),('sud kivu'),('sud ubangi'),('tanganyika'),('tshopo'),('tshuapa') ON DUPLICATE KEY UPDATE nom=nom;
+INSERT INTO Province VALUES ('bas uele'),('equateur'),('haut katanga'),('haut lomami'),('haut uele'),('ituri'),('kasai'),('kasai central'),('kasai oriental'),('kinshasa'),('kongo central'),('kwango'),('kwilu'),('lomami'),('lualaba'),('mai ndombe'),('maniema'),('mongala'),('nord kivu'),('nord ubangi'),('sankuru'),('sud kivu'),('sud ubangi'),('tanganyika'),('tshopo'),('tshuapa'),('TOUS') ON DUPLICATE KEY UPDATE nom=nom;
 
 INSERT INTO Limitation VALUES('AnalyzedDocumentLimit',5) ON DUPLICATE KEY UPDATE name=name;
 
@@ -207,6 +207,7 @@ INSERT INTO Circonscription(nom,province) VALUES ('bafwasende','tshopo'),('banal
 
 INSERT INTO Circonscription(nom,province) VALUES ('befale','tshuapa'),('boende','tshuapa'),('boende ville','tshuapa'),('bokungu','tshuapa'),('djolu','tshuapa'),('ikela','tshuapa'),('monkoto','tshuapa') ON DUPLICATE KEY UPDATE nom=nom;
 
+INSERT INTO Circonscription(nom,province) VALUES('TOUS','TOUS');
 
 delimiter |
 
