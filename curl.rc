@@ -1,19 +1,25 @@
 # Sending pvs
 
 url = "t.com/api"
--b sessionId=12839201
--F references[]=@/Users/alainkashoba/Desktop/head.png
--F voix[]=@/Users/alainkashoba/Desktop/voice.png
--F preuve[]=@/Users/alainkashoba/Desktop/screen.png
+-b sessionId=1702048470
+-F references-presidentielles[]=@/Users/alainkashoba/Desktop/head_3.png
+-F references-nationales[]=@/Users/alainkashoba/Desktop/head.png
+-F references-provinciales[]=@/Users/alainkashoba/Desktop/head.png
+-F voix-presidentielles[]=@/Users/alainkashoba/Desktop/voice.png
+-F voix-nationales[]=@/Users/alainkashoba/Desktop/voice.png
+-F voix-provinciales[]=@/Users/alainkashoba/Desktop/voice.png
+-F preuve-presidentielles[]=@/Users/alainkashoba/Desktop/screen.png
+-F preuve-nationales[]=@/Users/alainkashoba/Desktop/screen.png
+-F preuve-provinciales[]=@/Users/alainkashoba/Desktop/screen.png
 
-url = "t.com/api"
--b sessionId=12839201
--F references[]=@/Users/alainkashoba/Desktop/head.png
--F voix[]=@/Users/alainkashoba/Desktop/voice_2.png
--F preuve[]=@/Users/alainkashoba/Desktop/screen.png
+#url = "t.com/api"
+#-b sessionId=12839201
+#-F references[]=@/Users/alainkashoba/Desktop/head.png
+#-F voix[]=@/Users/alainkashoba/Desktop/voice_2.png
+#-F preuve[]=@/Users/alainkashoba/Desktop/screen.png
 
-url = "t.com/api"
--b sessionId=204893028
--F references[]=@/Users/alainkashoba/Desktop/head_3.png
--F voix[]=@/Users/alainkashoba/Desktop/voice.png
--F preuve[]=@/Users/alainkashoba/Desktop/screen.png
+#url = "t.com/api"
+#-b sessionId=204893028
+#-F references[]=@/Users/alainkashoba/Desktop/head_3.png
+#-F voix[]=@/Users/alainkashoba/Desktop/voice.png
+#-F preuve[]=@/Users/alainkashoba/Desktop/screen.png

@@ -7,3 +7,5 @@ export function getFileName(filePath){
 export function isDev(){
 	return process.env.NODE_ENV == 'development';
 }
+
+export const domainKeys = ['presidentiel','nationale','provinciale'];
