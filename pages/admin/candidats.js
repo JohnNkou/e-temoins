@@ -10,7 +10,7 @@ customLink = <link href="/vendor/datatables/css/jquery.dataTables.min.css" rel="
 
 export default function Candidat(){
 	let [candidats, setCandidats] = useState([]),
-	[options] = useState(["","Presidentielles","Nationales","Provinciales"]),
+	[options] = useState(["Presidentielles"]),
 	[selected,setSelected] = useState(""),
 	[showModal,setShowModal] = useState(false),
 	formRef = React.createRef(),
@@ -116,11 +116,12 @@ export default function Candidat(){
 						                                            <input name='nom' type="text" className="form-control input-default " placeholder="Nom" />
 						                                        </div>
 						                                        <div className="mb-3">
-						                                            <input name='prenom' type="text" className="form-control input-default " placeholder="Prenom" />
-						                                        </div>
-						                                        <div className="mb-3">
 						                                            <input name='postnom' type="text" className="form-control input-default " placeholder="PostNom" />
 						                                        </div>
+						                                        <div className="mb-3">
+						                                            <input name='prenom' type="text" className="form-control input-default " placeholder="Prenom" />
+						                                        </div>
+						                                        
 						                                        <div className="mb-3">
 						                                            <input name='numero' type="text" className="form-control input-default " placeholder="Numero" />
 						                                        </div>
@@ -159,6 +160,12 @@ export default function Candidat(){
 																			</div>
 																		</div>
 																	</div>
+						                                        </div>
+						                                        <div>
+						                                        	<input type='hidden' name='province' value='TOUS' />
+						                                        </div>
+						                                        <div>
+						                                        	<input type='hidden' name='circonscription' value = 'TOUS' />
 						                                        </div>
 						                                    	<div className='mb-3'>
 						                                        	<div className="input-group mb-3">

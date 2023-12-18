@@ -4,16 +4,21 @@ import axios from 'axios';
 import App from '../../src/views/main/App'
 import CommonScript from '../../src/components/CommonScript';
 
-let apiUrl = '/api/temoin',
+let apiUrl = '/api/temoin?province=true',
 apiUrl2 = '/api/candidat',
+apiUrl3 = '/api/province',
+apiUrl4 = '/api/circonscription',
 customLink = <link href="/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet" />;
 
 export default function Temoin(){
 	let [temoins, setTemoins] = useState([]),
-	[candidats, setCandidats] = useState([]),
+	[candidats, setCandidats] = useState({}),
+	[provinces, setProvinces] = useState([]),
+	[circonscription,setCirconscription] = useState([]),
 	[options] = useState(["","Kinshasa","Bandundun","Equateur"]),
 	[selected,setSelected] = useState(''),
 	[selected2, setSelected2] = useState({}),
+	[selected3, setSelected3] = useState({}),
 	[hostname,setHostname] = useState(''),
 	[showModal,setShowModal] = useState(false),
 	formRef = React.createRef(),
@@ -25,21 +30,62 @@ export default function Temoin(){
 		axios.get(apiUrl).then((response)=>{
 			let payload = response.data;
 
-			setTemoins(payload.data);
+			setTemoins(payload.data[0]);
+			setProvinces(payload.data[1]);
 		}).catch((error)=>{
 			alert("Erreur on fetching Temoint");
 			console.error(error);
 		})
+	},[true]);
 
-		axios.get(apiUrl2).then((response)=>{
+	useEffect(()=>{
+		if(selected){
+			getCirconscription(selected);
+		}
+		else{
+			setSelected('');
+		}
+	},[selected]);
+
+	useEffect(()=>{
+		if(selected3.nom){
+			let url = `${apiUrl2}?cir=${selected3.id}`;
+
+			axios.get(url).then((response)=>{
+				let payload = response.data,
+				candidats = [];
+
+				payload.data.forEach((d)=>{
+					if(!candidats[d.domain]){
+						candidats[d.domain] = [];
+					}
+
+					candidats[d.domain].push(d);
+				})
+
+				setCandidats(candidats);
+			}).catch((error)=>{
+				alert("Error fetching candidat");
+				console.error(error);
+			})
+		}
+		else{
+			setCandidats({});
+		}
+	},[selected3.nom]);
+
+	function getCirconscription(province){
+		let url = `${apiUrl4}?province=${province}`;
+
+		axios.get(url).then((response)=>{
 			let payload = response.data;
 
-			setCandidats(payload.data);
+			setCirconscription(payload.data);
 		}).catch((error)=>{
-			alert("Error fetching Candidats");
+			alert("Erreur fetching circonscription");
 			console.error(error);
 		})
-	},[true])
+	}
 
 	async function submitForm(event){
 		event.preventDefault();
@@ -54,6 +100,10 @@ export default function Temoin(){
 		axios.post(apiUrl,form).then((response)=>{
 			console.log("Great",response);
 			alert("Temoin inseré avec success");
+			setCirconscription([]);
+			setSelected('');
+			setSelected2({});
+			setSelected3({});
 			form.reset();
 		}).catch((error)=>{
 			console.error(error);
@@ -67,6 +117,10 @@ export default function Temoin(){
 
 		if(className && className.indexOf('btn-close') != -1 || target.type == 'reset'){
 			setShowModal(false);
+			setCirconscription([]);
+			setSelected('');
+			setSelected2({});
+			setSelected3({});
 			formRef.current.reset();
 		}
 	}
@@ -182,15 +236,16 @@ export default function Temoin(){
 					                                        <div className="mb-3">
 					                                            <label>Province </label>
 					                                            <div className="dropdown bootstrap-select default-select form-control wide mb-3">
-					                                            	<select required value={selected} name='province' className="default-select form-control wide mb-3" tabIndex="null">
-					                                            		{options.map((opt,i)=>{
-					                                            			return <option value={opt} key={i}>{opt}</option>
+					                                            	<select required value={selected} name='' className="default-select form-control wide mb-3" tabIndex="null">
+					                                            		{provinces.map((opt)=>{
+					                                            			let province = opt.nom;
+					                                            			return <option value={province} key={province}>{province}</option>
 					                                            		})}
 																	</select>
 																	<button type="button" tabIndex="-1" className="btn dropdown-toggle btn-light" data-bs-toggle="dropdown" role="combobox" aria-owns="bs-select-1" aria-haspopup="listbox" aria-expanded="false" title="Option 3">
 																		<div className="filter-option">
 																			<div className="filter-option-inner">
-																				<div className="filter-option-inner-inner">{selected}</div>
+																				<div className="filter-option-inner-inner text-capitalize">{selected}</div>
 																			</div> 
 																		</div>
 																	</button>
@@ -203,10 +258,47 @@ export default function Temoin(){
 
 																				setSelected(ita);
 																			}} className="dropdown-menu inner show" role="presentation" style={{marginTop:'0px', marginBottom:'0px'}}>
-																				{options.map((opt,i)=>{
+																				{provinces.map((opt,i)=>{
 																					return <li key={i} className="">
-																								<a ita={opt} role="option" className="dropdown-item" id="bs-select-1-0" tabIndex="0" aria-setsize="3" aria-posinset="1">
-																									<span ita={opt} className="text">{opt}</span>
+																								<a ita={opt.nom} role="option" className="dropdown-item" id="bs-select-1-0" tabIndex="0" aria-setsize="3" aria-posinset="1">
+																									<span ita={opt.nom} className="text-capitalize">{opt.nom}</span>
+																								</a>
+																							</li>
+																				})}
+																			</ul>
+																		</div>
+																	</div>
+																</div>
+					                                        </div>
+					                                        <div className="mb-3">
+					                                            <label>Circonscription </label>
+					                                            <div className="dropdown bootstrap-select default-select form-control wide mb-3">
+					                                            	<select required value={selected3.nom} name='circonscriptionId' className="default-select form-control wide mb-3" tabIndex="null">
+					                                            		{circonscription.map((opt)=>{
+					                                            			let nom = opt.nom;
+					                                            			return <option value={opt.id} key={opt.id}>{nom}</option>
+					                                            		})}
+																	</select>
+																	<button type="button" tabIndex="-1" className="btn dropdown-toggle btn-light" data-bs-toggle="dropdown" role="combobox" aria-owns="bs-select-1" aria-haspopup="listbox" aria-expanded="false" title="Option 3">
+																		<div className="filter-option">
+																			<div className="filter-option-inner">
+																				<div className="filter-option-inner-inner text-capitalize">{selected3.nom}</div>
+																			</div> 
+																		</div>
+																	</button>
+																	<div className="dropdown-menu" style={{maxHeight:'402.25px', overflow:'hidden', minHeight:'0px',}}>
+																		<div className="inner show" role="listbox" id="bs-select-1" tabIndex="-1" aria-activedescendant="bs-select-1-2" style={{maxHeight:'386.25px', overflowY:'auto', minHeight:'0px'}}>
+																			<ul onClick={(event)=> {
+																				event.preventDefault();
+																				let target = event.target,
+																				ita = target.getAttribute('ita');
+
+																				setSelected3(circonscription[ita]);
+																			}} className="dropdown-menu inner show" role="presentation" style={{marginTop:'0px', marginBottom:'0px'}}>
+																				{circonscription.map((opt,i)=>{
+																					return <li key={i} className="">
+																								<a ita={i} role="option" className="dropdown-item" id="bs-select-1-0" tabIndex="0" aria-setsize="3" aria-posinset="1">
+																									<span ita={i} className="text-capitalize">{opt.nom}</span>
 																								</a>
 																							</li>
 																				})}
@@ -228,9 +320,15 @@ export default function Temoin(){
 					                                            <label className='me-3 align-middle'>Relier candidats </label>
 					                                            <select multiple name='idCandidats' className='align-middle' required>
 					                                            	<option value=''></option>
-					                                            	{candidats.map((candidat)=>{
-					                                            		return <option value={candidat.id}>{candidat.noms}</option>
+					                                            	{Object.keys(candidats).map((domain)=>{
+					                                            		let candidat = candidats[domain];
+					                                            		return <optgroup key={domain} label={domain}>
+					                                            			{candidat.map((c)=>{
+					                                            				return <option key={c.id} value={c.id}>{c.numero} {c.noms}</option>
+					                                            			})}
+					                                            		</optgroup>
 					                                            	})}
+					                                            	
 					                                            </select>
 					                                        </div>
 					                                    	<div className='mb-3'>

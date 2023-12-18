@@ -1,32 +1,28 @@
 import { TextractClient, DetectDocumentTextCommand, AnalyzeDocumentCommand, BadDocumentException,DocumentTooLargeException, InternalServerError, InvalidParameterException, ThrottlingException, UnsupportedDocumentException,TextractServiceException } from '@aws-sdk/client-textract';
-import { NodeHttpHandler } from '@smithy/node-http-handler'
-import { Agent } from 'http'
 import fs from 'fs/promises';
+import getClient from './client.js'
+import { sanitize, isDomain,pvRef, dePonctuate } from '../conversion.js'
+import { getFileName, isDev, domainKeys } from '../utils/helper.js'
+import { pvURI,pvARN, voixURI, voixARN, preuveURI, preuveARN } from '../ob/config.js'
 
-const config = {
-   region:'us-east-1',
-   credentials:{ accessKeyId:'AKIATNHOUSMIRJQXVKRI', secretAccessKey:'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' },
-   collectionName:(process.env.TESTING)? 'FF':'Dev',
-   requestHandler: new NodeHttpHandler({
-      httpAgent: new Agent({ keepAlive:true, keepAliveMsecs:60000 })
-   })
-},
-client = new TextractClient(config),
-formKeys = ['Candidats ayant obtenu au moins une voix', 'BV', 'Bulletins de vote non-valides', 'SV.bv', 'Total Candidats', 'Taux de Participation', 'Suffrages valablement Exprimés', 'Total Electeurs sur la liste', 'Total des Votants sur la liste', 'Territoires Villes','sect_chef_com', 'Provinces'],
+const formKeys =  Object.keys(pvRef),
 tableHead = ['No.', 'Organisations', 'Candidats', 'Voix'],
-AllRegex = /[^A-ZÀ-Ž\s-._]/ig/*,
+AllRegex = /[^A-ZÀ-Ž\s-._]/ig,
+voiceLink = (isDev())? voixURI: voixARN,
+preuveLink = (isDev())? preuveURI: preuveARN,
+pvLink = (isDev())? pvURI: pvARN;
+/*,
 response = JSON.parse((await fs.readFile('/Users/flashbell/Node/e-temoins/src/textract/response.json')).toString())*/;
 
-var instance;
+export default function textract(userProvince, userDistrict){
+   const client = getClient(),
+   instance = this;
 
-export default function textract(){
+   if(!userProvince || !userDistrict){
+      throw Error("No province no district given in constructor");
+   }
 
-   if(!instance){
-      instance = this;
-   }
-   else{
-      return instance;
-   }
+   let analyzedDocument = 0;
 
    this.getIds = function(blocks){
       let ids = {};
@@ -67,149 +63,289 @@ export default function textract(){
             return { custom:true, msg:'Une erreur est survenue lors du traitement des fichiers. Veuillez recommencer',error }
          }
       }
+      else if(error instanceof CustomError){
+         return { custom:true, msg: error.toString() }
+      }
       else{
-         return { error };
+         error.msg = error.toString();
+         return error;
       }
    }
 
-   this.analyzeDocument =  async function({ refFile, voiceFile, refResponse,voiceResponse }){
+   function updateDocumentHandler(e){
+      if(e instanceof TextractServiceException){
+         analyzedDocument++;
+      }
+   }
+
+   async function analyzeForm(filepath,domain){
+      let file = await fs.readFile(filepath),
+      response = await instance.createCommand(file,['FORMS']),
+      blocks = response.Blocks,
+      ids = instance.getIds(blocks),
+      formResult = instance.getForm(blocks,ids,domain != domainKeys[0]),
+      form = formResult.forms,
+      missing = formResult.missing;
+
+      return { form, missing, file }
+   }
+
+   this.analyzeDocument =  async function({ donnees, refResponse,voiceResponse }){
+      let keys = domainKeys,
+      keyLength = keys.length,
+      dataReturn = {};
+
       try{
-         let dateNow = Date.now(),
-         response = refResponse ||  await this.createCommand(refFile,['FORMS']),
-         dateThen = Date.now(),
-         blocks = response.Blocks,
-         ids,formResult,
-         voiceLength = voiceFile.length,
-         forms = [],
-         tables = [],
-         missing = [];
+         for(let i=0; i < keyLength; i++){
+            let domain = keys[i],
+            data = donnees[domain];
 
-         //console.log("it took ",dateThen - dateNow,"To process the datas");
+            if(!data){
+               continue;
+               //throw new CustomError(`No ${domain} found in data`);
+            }
 
-         //console.log('response',blocks);
+            dataReturn[domain] = { };
 
-         //await fs.writeFile('response.json',JSON.stringify(response));
+            try{
+               let path = data.reference[0].path,
+               d = await analyzeForm(path,domain);
+               dataReturn[domain].form = d.form;
+               dataReturn[domain].missing = (d.missing.length)? d.missing:null;
+               dataReturn[domain].refName = pvLink + '/' + getFileName(path);
+               dataReturn[domain].refFile = d.file;
 
-         ids = this.getIds(blocks);
-         formResult = this.getForm(blocks,ids);
-         forms = formResult.forms;
-         missing = formResult.missing;
+               analyzedDocument++;
 
-         if(missing.length == 0){
-            for(let i=0; i < voiceLength; i++){
-               let f = voiceFile[i],
-               index = `voice_${i}`,
-               response = (voiceResponse && voiceResponse[i])? voiceResponse[i] : await this.createCommand(f,['TABLES']),
-               blocks = response.Blocks,
-               ids = this.getIds(blocks),
-               datas = this.getTables(blocks,ids);
+               if(d.missing.length == 0){
+                  d = await analyzeTable(data.voix);
+                  dataReturn[domain].tables = d.tables;
+                  dataReturn[domain].voixNames = d.names;
+                  dataReturn[domain].voixFiles = d.files;
+               }
+               else{
+                  if(domain == domainKeys[0]){
+                     throw new CustomError("Le fichier reference presidentiel n'a pas pu etre correctement traité, Veuillez vous assurez que les photos references ont tout les éléments d'en-tête suivants:  "+d.missing.join('---'))
+                  }
+                  console.error("Manquand dans fichier reference pour domaine",domain,d.missing,d.unwanted);
+                  return { dataReturn, analyzedDocument };
+               }
+            }
+            catch(e){
+               console.error("Error with domain",domain);
+               updateDocumentHandler(e);
 
-               //await fs.writeFile(index,JSON.stringify(response));
-
-               tables = tables.concat(datas.tables)
+               throw e;
             }
          }
 
-         return { forms, tables, missing };
+         return { dataReturn, analyzedDocument };
       }
       catch(error){
          error = this.exceptionHandler(error);
+         error.analyzedDocument = analyzedDocument;
 
          return Promise.reject(error);
       }
    }
 
-   this.getForm = function(blocks,ids){
+   async function analyzeTable(files){
+      let length = files.length,
+      tables = [], names = [], dales = [];
+
+      for(let i=0; i < length; i++){
+         let path = files[i].path,
+         file = await fs.readFile(path),
+         response = await instance.createCommand(file,['TABLES']),
+         blocks = response.Blocks,
+         ids = instance.getIds(blocks),
+         data = instance.getTables(blocks,ids);
+
+         analyzedDocument++;
+
+         tables = tables.concat(data.tables);
+         names.push(`${voiceLink}/${getFileName(path)}`);
+         dales.push(file);
+      }
+
+      return { tables, names, files:dales }
+   }
+
+   this.getText = (Ids,ids)=>{
+      return Ids.reduce((text,next)=>{
+         text += ids[next].Text + ' ';
+         return text;
+      },'');
+   }
+
+   this.getForm = function(blocks,ids,checkUser){
       let forms = [],
-      missing = [...formKeys];
+      missing = [...formKeys],
+      unwanted = [],
+      key,valueBlock,
+      value,relations;
 
-      blocks.filter((block)=> block.BlockType == 'KEY_VALUE_SET').forEach((block)=>{
+      blocks.forEach((block)=>{
          try{
-            if(block.EntityTypes.indexOf('KEY') != -1){
-               let relations = block.Relationships;
-               if(relations){
-                  let key = relations[1].Ids.reduce((text,next)=>{
-                     text += ids[next].Text + ' ';
-                     return text;
-                  },''),
-                  valueBlock = ids[relations[0].Ids[0]],
-                  value = ids[valueBlock.Relationships[0].Ids[0]].Text;
+            if(block.BlockType == 'KEY_VALUE_SET'){
+               if(block.EntityTypes.indexOf('KEY') != -1){
+                  relations = block.Relationships;
+                  if(relations && relations.length > 1){
+                     if(!relations[0].Ids || !relations[1].Ids){
+                        return;
+                     }
 
-                  key = key.replace(AllRegex,'').trim();
-                  value = value.trim();
+                     key = dePonctuate(this.getText(relations[1].Ids,ids)).toLowerCase();
+                     valueBlock = ids[relations[0].Ids[0]];
+                     value = (!isDomain(key))? ((valueBlock.Relationships)? this.getText(valueBlock.Relationships[0].Ids,ids):null) :true;
 
-                  if(missing.indexOf(key) != -1){
-                     let index = missing.indexOf(key);
-                     key = missing[index];
-                     missing.splice(index,1);
+                     if(value === true){ console.log('key',key);
+                        let newKey = 'legislative';
+                        value = pvRef[newKey].conversion(key);
+                        key = newKey;
+                     }
+                     else if(value){
+                        value = value.toLowerCase();
+                     }
+
+                     key = sanitize(key.replace(AllRegex,'').trim());
+
+                     if(value !== null){
+                        value = value.trim();
+                     }
+
+                     if(missing.indexOf(key) != -1){
+                        let index = missing.indexOf(key);
+                        key = missing[index];
+                        missing.splice(index,1);
+
+                        if(key == 'provinces'){
+                           value = sanitize(value);
+                        }
+
+                        if(checkUser){
+                           if(key == 'provinces'){
+                              if(value != userProvince){
+                                 
+                                 throw new CustomError(`Vous n'êtes pas authorizé à envoyer des pvs pour cette province.`);
+                              }
+                           }
+                        }
+
+                        forms.push([key,value]);
+                     }
+                     else{
+                        unwanted.push([key,value]);
+                     }
                   }
-
-                  forms.push([key,value]);
-               }
+               }  
             }
          }
          catch(e){
-            console.error("Error with block");
+            console.error("Error with block",relations,key,value,isDomain(key),forms,unwanted);
             console.error(block);
             throw e;
          }
       })
 
-      return { forms, missing }
+      return { forms, missing, unwanted }
    }
 
    this.getTables = function(blocks,ids){
       let tables = [[]],
       indexTable = 0,
-      tHead = [...tableHead];
+      tHead = [...tableHead],
+      removeNumber = 0,
+      hightestColumn = 0;
 
-      blocks.filter((block)=> block.BlockType == 'CELL').forEach((block)=>{
-         if(block.Relationships){
-            block.Relationships.forEach((bb)=>{
-                     let bIds = bb.Ids,
-                     row = block.RowIndex - 1,
-                     col = block.ColumnIndex -1,
-                     text = '';
+      blocks.forEach((block)=>{
+         if(block.BlockType == 'CELL'){
+            if(block.Relationships){
+               if(block.EntityTypes == 'COLUMN_HEADER'){
+                  if(!removeNumber){
+                     removeNumber = 1;
+                  }
+                  return;
+               }
+               block.Relationships.forEach((bb)=>{
+                        let bIds = bb.Ids,
+                        row = (block.RowIndex - 1) - removeNumber,
+                        col = block.ColumnIndex -1,
+                        text = '';
 
-                     bIds.forEach((id)=>{
-                        if(ids[id].BlockType == 'WORD'){
-                           text +=  ids[id].Text + ' ';
+                        if(block.ColumnIndex > hightestColumn){
+                           hightestColumn = block.ColumnIndex;
+                        }
+
+                        bIds.forEach((id)=>{
+                           if(ids[id].BlockType == 'WORD'){
+                              text +=  ids[id].Text + ' ';
+                           }
+                        })
+
+                        text = text.trim();
+
+                        if(tHead.indexOf(text) != -1){
+                           return;
+                        }
+
+                        if(!tables[indexTable][row]){
+                           tables[indexTable][row] = [text];
+                        }
+                        else if(!tables[indexTable][row][col]){
+                           tables[indexTable][row][col] = text;
+                        }
+                        else{
+                           tables[++indexTable] = [];
+                           tables[indexTable][row] = [];
+                           tables[indexTable][row][col] = text;
                         }
                      })
+                  }
+         }
+      });
 
-                     text = text.trim();
+      if(tables[0].length == 0){
+         throw new CustomError("Fichier voix envoyé incorrect")
+      }
 
-                     if(tHead.indexOf(text) != -1){
-                        return;
-                     }
-
-                     if(!tables[indexTable][row]){
-                        tables[indexTable][row] = [text];
-                     }
-                     else if(!tables[indexTable][row][col]){
-                        tables[indexTable][row][col] = text;
-                     }
-                     else{
-                        tables[++indexTable] = [];
-                        tables[indexTable][row] = [];
-                        tables[indexTable][row][col] = text;
-                     }
-                  })
-               }
-      })
+      if(hightestColumn < 3){
+         throw new CustomError("Fichier voix envoyé incorrect");
+      }
 
       return { tables, tHead }
    }
 }
 
-/*let refFile = await fs.readFile('/Users/alainkashoba/Desktop/page.html'),
-voiceFile = await fs.readFile('/Users/alainkashoba/Desktop/page.html'),
-t = new textract(),
-refResponse, //= JSON.parse((await fs.readFile('response.json')).toString()),
-voiceResponse, // = JSON.parse((await fs.readFile('voice_0')).toString()),
-d = await t.analyzeDocument({ refFile, voiceFile, refResponse }); console.log('d',d);
+function CustomError(message){
 
-//fs.writeFile('head.json',JSON.stringify(d));
+   this.toString = function(){
+      return message;
+   }
+}
 
-/*let file = JSON.parse((await fs.readFile('head.json')).toString());
-console.log(file.tables[0]);*/
+async function useResponse({ refResponse, voiceResponse }){
+   let t = new textract(),
+   response = await t.analyzeDocument({refResponse, voiceResponse, userProvince:'nord kivu'});
+
+   return response;
+}
+
+async function useFiles({ refFile, voiceFile }){
+   let t = new textract(),
+   response = await t.analyzeDocument({ refFile, voiceFile });
+}
+
+/*let { blocks, ids, checkUser } = JSON.parse((await fs.readFile('getFormBlocks')).toString());
+
+let t = new textract('nord kivu','goma ville');
+
+console.log(t.getForm(blocks,ids,checkUser))*/
+
+/*try{
+   let r = await useResponse({ refResponse: JSON.parse((await fs.readFile('response.json')).toString()), voiceResponse: [JSON.parse((await fs.readFile('voice_0')).toString()), JSON.parse((await fs.readFile('voice_0')).toString())] });
+   console.log(r.tables);
+}
+catch(e){
+   console.error(e);
+}*/

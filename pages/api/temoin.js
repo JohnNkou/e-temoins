@@ -20,7 +20,7 @@ function getHash(text){
 	})
 }
 
-export default async function Candidat(req,res){
+export default async function Temoin(req,res){
 	let db = new dbClass(conn),
 	query = req.query,
 	body = req.body,
@@ -43,7 +43,7 @@ export default async function Candidat(req,res){
 			if(!(form.data.idCandidats instanceof Array)){
 				form.data.idCandidats = [form.data.idCandidats];
 			}
-			await db.addUser(form.data).then(async (response)=>{
+			await db.addUser(form.data).then(async (response)=>{ console.log('response',response);
 				try{
 					let S3 = new s3(),
 					filePath = form.files.image[0].path,
@@ -63,7 +63,7 @@ export default async function Candidat(req,res){
 					console.error("ERror",e);
 					res.status(500).json(e);
 				}
-			}).catch(async (error)=>{
+			}).catch(async (error)=>{ console.error('error',error);
 				res.status(500).json(error);
 				for(let i=0; i < form.removePath.length; i++){
 					let path = form.removePath[i];
