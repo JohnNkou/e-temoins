@@ -168,10 +168,10 @@ export default async function Bulletin(req,res){
 						else if((dataResult[nationaleKey] && dataResult[nationaleKey].missing) || (dataResult[provincialKey] && dataResult[provincialKey].missing)){
 							let msg = [];
 
-							if(dataResult[nationaleKey].missing){
+							if(dataResult[nationaleKey] && dataResult[nationaleKey].missing){
 								msg.push('Le fichier references nationale manque les donnée suivante '+ dataResult[nationaleKey].missing.join(','))
 							}
-							if(dataResult[provincialKey].missing){
+							if(dataResult[provincialKey] && dataResult[provincialKey].missing){
 								msg.push('Le fichier references provinciale manque les donnée suivante '+dataResult[provincialKey].missing.join(','))
 							}
 							console.log("Response sent. Some ref missing");

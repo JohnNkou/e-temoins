@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS Candidat (
     postnom varchar(50) not null,
     domain enum('Presidentielles', 'Nationales', 'Provinciales') NOT NULL,
     image varchar(200) not null,
-    province varchar(100) not null REFERENCES Province(name),
     circonscriptionId int not null REFERENCES Circonscription(id),
     UNIQUE(numero,domain,province,circonscriptionId)
 );
@@ -35,7 +34,6 @@ otpcode varchar(200),
 statuscompte varchar(50) DEFAULT 'NO',
 telephone varchar(10) not null,
 image varchar(200) not null,
-province varchar(100) not null REFERENCES Province(name),
 circonscriptionId int not null REFERENCES Circonscription(id),
 status int not null,
 dateOTP TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP(),

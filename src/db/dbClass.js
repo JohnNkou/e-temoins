@@ -68,9 +68,9 @@ export default function dbClass({conn,reconnect}){
 		})
 	}
 
-	this.addCandidat = ({nom,prenom,postnom,numero,domaine,image,province,circonscription})=>{
-		let sql = 'INSERT INTO Candidat(nom,prenom,postnom,numero,domain,image,province,circonscriptionId) SELECT ?,?,?,?,?,?,?,id FROM Circonscription WHERE nom = ?',
-		params = [nom,prenom,postnom,numero,domaine,image,province,circonscription];
+	this.addCandidat = ({nom,prenom,postnom,numero,domaine,image,circonscription})=>{
+		let sql = 'INSERT INTO Candidat(nom,prenom,postnom,numero,domain,image,circonscriptionId) SELECT ?,?,?,?,?,?,?,id FROM Circonscription WHERE nom = ?',
+		params = [nom,prenom,postnom,numero,domaine,image,circonscription];
 
 		return this.do(sql,params).then(addResponse).catch((error)=>{
 			throw addResponse({},error);

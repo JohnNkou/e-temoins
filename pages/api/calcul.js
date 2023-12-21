@@ -24,7 +24,6 @@ circons = {
 	'kinshasa iii mont amba':'Kinshasa III Mont-Amba',
 	'mbanza ngungu':'Mbanza-Ngungu',
 	'seke banza':'Seke-Banza',
-	'mbanza ngungu':'Mbanza-Ngungu',
 	'kasongo lunda':'Kasongo-Lunda',
 	'luilu mwene ditu':'Luilu (Mwene-Ditu)',
 	'mwene ditu ville':'Mwene-Ditu Ville',

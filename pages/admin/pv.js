@@ -123,7 +123,7 @@ function HeadRef({refe}){
 function Label({domain}){
 	return <div className='text-center mb-3'>
 		<p className='font-medium'>FICHE DES RESULATS</p>
-		<p className='font-medium'>Elections Législatives <span>{domain}</span></p>
+		<p className='font-medium'>Elections {(domain != 'presidentielles')? 'Législatives':'' }  <span>{domain}</span></p>
 		<p className='font-medium'>{(new Date()).getFullYear()}</p>
 	</div>
 }

@@ -85,9 +85,10 @@ export default function textract(userProvince, userDistrict){
       ids = instance.getIds(blocks),
       formResult = instance.getForm(blocks,ids,domain != domainKeys[0]),
       form = formResult.forms,
-      missing = formResult.missing;
+      missing = formResult.missing,
+      unwanted = formResult.unwanted;
 
-      return { form, missing, file }
+      return { form, missing, file, unwanted };
    }
 
    this.analyzeDocument =  async function({ donnees, refResponse,voiceResponse }){
@@ -124,10 +125,10 @@ export default function textract(userProvince, userDistrict){
                   dataReturn[domain].voixFiles = d.files;
                }
                else{
+                  console.error("Manquand dans fichier reference pour domaine",domain,d.missing,d.unwanted);
                   if(domain == domainKeys[0]){
                      throw new CustomError("Le fichier reference presidentiel n'a pas pu etre correctement traité, Veuillez vous assurez que les photos references ont tout les éléments d'en-tête suivants:  "+d.missing.join('---'))
                   }
-                  console.error("Manquand dans fichier reference pour domaine",domain,d.missing,d.unwanted);
                   return { dataReturn, analyzedDocument };
                }
             }
@@ -198,6 +199,11 @@ export default function textract(userProvince, userDistrict){
                      key = dePonctuate(this.getText(relations[1].Ids,ids)).toLowerCase();
                      valueBlock = ids[relations[0].Ids[0]];
                      value = (!isDomain(key))? ((valueBlock.Relationships)? this.getText(valueBlock.Relationships[0].Ids,ids):null) :true;
+
+                     if(isDomain(value)){
+                        key = value;
+                        value = true;
+                     }
 
                      if(value === true){ console.log('key',key);
                         let newKey = 'legislative';
